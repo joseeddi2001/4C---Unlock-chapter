@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080912">
+<title>Déverrouille le coffre — Chapitre 1</title>
+<meta name="app-build" content="safari-safe-2026-08-30">
+
+<style>
+:root{
+  --bg:#070811;
+  --bg2:#101326;
+  --panel:#15192c;
+  --panel2:#1c2239;
+  --text:#f7f8ff;
+  --muted:#aeb6cf;
+  --gold:#f5cb58;
+  --gold2:#ffe59a;
+  --cyan:#63d8ff;
+  --pink:#ff58cd;
+  --green:#66eda8;
+  --red:#ff7583;
+  --line:rgba(255,255,255,.12);
+  --shadow:0 18px 50px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+  radial-gradient(circle at 15% 0%,rgba(83,69,181,.35),transparent 26%),
+  radial-gradient(circle at 88% 8%,rgba(255,88,205,.14),transparent 22%),
+  linear-gradient(180deg,#080912 0,#0a0c18 38%,#06070d 100%);
+  color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}
+button{touch-action:manipulation}
+.hidden{display:none!important}
+.app{width:min(1280px,calc(100% - 24px));margin:auto;padding:18px 0 48px;position:relative}
+.app:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background:
+ repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 80px),
+ repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 80px)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:4}
+.brand{display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.13em;color:var(--gold2);font-weight:950}
+.logo{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,229,154,.35);display:grid;place-items:center;background:rgba(255,229,154,.08)}
+.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.status{padding:9px 13px;border-radius:999px;background:rgba(8,10,20,.82);border:1px solid var(--line);font-size:.86rem;color:var(--muted)}
+.status.ok{color:var(--green)}
+.status.bad{color:var(--red)}
+.btn{border:0;border-radius:14px;min-height:46px;padding:12px 18px;font-weight:900;cursor:pointer;transition:.15s transform,.15s filter,.15s opacity;-webkit-appearance:none;appearance:none;position:relative;z-index:10;pointer-events:auto}
+.btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
+.primary{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#19130b;box-shadow:0 0 24px rgba(245,203,88,.2)}
+.secondary{background:linear-gradient(180deg,#2a3252,#1b2037);color:var(--text);border:1px solid rgba(255,255,255,.08)}
+.danger{background:linear-gradient(180deg,#652333,#35121b);color:#ffd8dc;border:1px solid rgba(255,117,131,.22)}
+.tiny-btn{min-height:40px;padding:9px 12px;font-size:.82rem}
+.stage{position:relative;border:1px solid rgba(255,255,255,.11);border-radius:28px;overflow:hidden;box-shadow:var(--shadow);background:linear-gradient(180deg,rgba(15,18,33,.94),rgba(8,10,18,.96))}
+.stage:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:28px;
+  border:2px solid rgba(245,203,88,.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(99,216,255,.14),
+    inset 0 0 28px rgba(255,88,205,.05);
+  pointer-events:none;
+}
+.bulbs{display:grid;grid-template-columns:repeat(30,1fr);gap:6px;padding:12px 14px 4px}
+.bulb{height:9px;border-radius:999px;background:var(--gold);box-shadow:0 0 10px rgba(245,203,88,.62);animation:blink 1.5s steps(2,end) infinite}
+.bulb:nth-child(3n){background:var(--cyan);box-shadow:0 0 10px rgba(99,216,255,.62);animation-delay:.4s}
+.bulb:nth-child(5n){background:var(--pink);box-shadow:0 0 10px rgba(255,88,205,.62);animation-delay:.8s}
+@keyframes blink{50%{opacity:.45}}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:20px;padding:24px}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-weight:900;font-size:.76rem;color:var(--gold2)}
+.hero h1{margin:.3rem 0 .7rem;font-size:clamp(2.4rem,5vw,4.8rem);line-height:.93;letter-spacing:-.05em}
+.hero p{color:var(--muted);font-size:1.03rem;line-height:1.62;max-width:760px}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.rule{position:relative;padding:16px 16px 16px 20px;background:linear-gradient(180deg,rgba(28,34,57,.9),rgba(15,18,32,.92));border:1px solid rgba(255,255,255,.09);border-radius:18px;overflow:hidden}
+.rule:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:linear-gradient(180deg,var(--gold),var(--pink))}
+.rule b{display:block;font-size:.73rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold2);margin-bottom:6px}
+.rule span{color:var(--muted);line-height:1.45}
+.vault-scene{position:relative;min-height:355px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:
+ linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.45)),
+ url("https://commons.wikimedia.org/wiki/Special:FilePath/Hall%27s%20Safe%20%26%20Lock%20Co%20Coffre%20Door.jpg") center/cover}
+.vault-scene:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 52% 42%,rgba(99,216,255,.14),transparent 30%),linear-gradient(180deg,transparent 45%,rgba(4,5,10,.88))}
+.dial{position:absolute;left:50%;top:43%;width:128px;height:128px;border-radius:50%;border:6px solid rgba(255,229,154,.85);transform:translate(-50%,-50%);box-shadow:0 0 24px rgba(245,203,88,.25),inset 0 0 20px rgba(0,0,0,.65);z-index:2;animation:dialIdle 7s ease-in-out infinite}
+.dial:before,.dial:after{content:"";position:absolute;left:50%;top:50%;background:var(--gold2);transform-origin:center}
+.dial:before{width:48px;height:5px;transform:translate(-4px,-2px) rotate(0deg)}
+.dial:after{width:5px;height:48px;transform:translate(-2px,-4px)}
+@keyframes dialIdle{0%,100%{transform:translate(-50%,-50%) rotate(-4deg)}50%{transform:translate(-50%,-50%) rotate(6deg)}}
+.vault-scene.cracking .dial{animation:dialCrack .7s ease-in-out infinite}
+@keyframes dialCrack{0%{transform:translate(-50%,-50%) rotate(-12deg)}50%{transform:translate(-50%,-50%) rotate(14deg)}100%{transform:translate(-50%,-50%) rotate(-12deg)}}
+.vault-caption{position:absolute;left:18px;right:18px;bottom:17px;z-index:3}
+.vault-caption strong{font-size:1.1rem}
+.vault-caption div{margin-top:5px;color:#d2d7e7;font-size:.9rem}
+.spark{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold2);z-index:3;opacity:0}
+.vault-scene.cracking .spark{animation:spark 1.2s infinite}
+.s1{left:44%;top:31%}.s2{left:58%;top:47%;animation-delay:.3s!important}.s3{left:40%;top:54%;animation-delay:.7s!important}.s4{left:62%;top:34%;animation-delay:.9s!important}
+@keyframes spark{0%{opacity:0;transform:translate(0,0) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(35px,-28px) scale(1.4)}}
+.action-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px;position:relative;z-index:20}
+.message{margin:0 0 14px;padding:12px 15px;border-radius:15px;border:1px solid rgba(255,117,131,.28);background:rgba(71,24,32,.72);color:#ffd8dd}
+.live-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:4px 0 15px}
+.live-head h2{font-size:2.25rem;margin:.25rem 0 0}
+.timer-box{padding:11px 15px;border-radius:16px;background:linear-gradient(180deg,#293251,#171c31);border:1px solid rgba(255,255,255,.09)}
+.timer-label{text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:var(--gold2);font-weight:900}
+.timer{font-size:2.2rem;font-variant-numeric:tabular-nums;font-weight:950}
+.timer.warn{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.035)}}
+.dashboard{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+.panel{border:1px solid rgba(255,255,255,.1);border-radius:24px;background:linear-gradient(180deg,rgba(18,22,39,.95),rgba(9,11,21,.97));box-shadow:var(--shadow);overflow:hidden}
+.panel-pad{padding:17px}
+.questions{display:grid;gap:11px}
+.qrow{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr) 120px 132px;align-items:center;gap:12px;padding:17px 16px 17px 20px;border:1px solid rgba(255,255,255,.08);border-radius:17px;background:linear-gradient(180deg,rgba(29,35,60,.94),rgba(17,21,37,.98));overflow:hidden}
+.qrow:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--cyan),var(--pink))}
+.lock{width:29px;height:23px;border:2px solid #7a849f;border-radius:5px;position:relative;margin:auto}
+.lock:before{content:"";position:absolute;left:5px;top:-13px;width:14px;height:14px;border:3px solid #7a849f;border-bottom:0;border-radius:10px 10px 0 0;transition:.3s}
+.lock.open{border-color:var(--green);box-shadow:0 0 14px rgba(102,237,168,.2)}
+.lock.open:before{border-color:var(--green);transform:rotate(-27deg);transform-origin:left bottom}
+.eq{font-family:Georgia,"Times New Roman",serif;font-size:1.18rem}
+.frac{display:inline-grid;grid-template-rows:auto auto;vertical-align:middle;text-align:center;line-height:1.05;margin:0 .15em}
+.frac .num{border-bottom:1.5px solid currentColor;padding:0 .18em .12em}
+.frac .den{padding-top:.12em}
+.qpct{font-size:1.28rem;font-weight:950;text-align:right;font-variant-numeric:tabular-nums}
+.qsub{text-align:right;color:var(--muted);font-size:.83rem}
+.side{display:grid;gap:15px}
+.score{padding:18px;text-align:center;position:relative;background:
+ radial-gradient(circle at 50% 40%,rgba(245,203,88,.09),transparent 35%),
+ linear-gradient(180deg,rgba(20,24,43,.96),rgba(11,13,24,.98))}
+.ring{width:214px;height:214px;border-radius:50%;display:grid;place-items:center;margin:8px auto 17px;background:conic-gradient(var(--gold) 0deg,#30364b 0deg);position:relative}
+.ring:before{content:"";position:absolute;inset:13px;border-radius:50%;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.06),rgba(7,9,17,.98));border:1px solid rgba(255,255,255,.08)}
+.ring-content{position:relative;z-index:1}
+.total{font-size:2.6rem;font-weight:950;font-variant-numeric:tabular-nums}
+.ring-caption{text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-size:.7rem;font-weight:900}
+.statline{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(255,255,255,.08);padding:11px 0;color:var(--muted)}
+.statline b{color:var(--gold2)}
+.crack-progress{text-align:left;margin-top:9px;padding:13px;border:1px solid rgba(255,255,255,.08);border-radius:15px;background:rgba(7,9,17,.58)}
+.track{height:11px;background:#293047;border-radius:999px;overflow:hidden;margin-top:10px}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--gold),var(--green));transition:width .35s}
+.join{padding:17px;text-align:center}
+.qr{width:180px;height:180px;display:block;margin:10px auto;border-radius:12px;background:#fff;padding:7px}
+.code{font-size:1.7rem;color:var(--gold2);font-weight:950;letter-spacing:.21em}
+.student-url{display:block;color:#dce2f4;font-size:.7rem;word-break:break-all;margin-top:7px;user-select:all}
+.result{position:relative;margin-top:18px;padding:42px 24px;border-radius:28px;text-align:center;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+.result:before{content:"";position:absolute;inset:0;background:url("https://commons.wikimedia.org/wiki/Special:FilePath/Hall%27s%20Safe%20%26%20Lock%20Co%20Coffre%20Door.jpg") center/cover;opacity:.22}
+.result:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,10,18,.45),rgba(8,10,18,.92))}
+.result>*{position:relative;z-index:1}
+.result h2{font-size:clamp(2.2rem,5vw,4rem);margin:.35rem 0}
+.result.success{background:#10261c;border-color:rgba(102,237,168,.32)}
+.result.fail{background:#2a1218;border-color:rgba(255,117,131,.3)}
+.reveal{display:inline-block;margin-top:16px;padding:16px 24px;border-radius:17px;background:rgba(21,61,43,.82);border:1px solid rgba(102,237,168,.35);color:#ccffe5;font-weight:950;font-size:1.3rem}
+.redacted{display:inline-block;margin-top:16px;padding:16px 24px;border-radius:17px;background:rgba(67,20,28,.82);border:1px solid rgba(255,117,131,.28);color:#ffd2d7;font-weight:950;letter-spacing:.18em}
+.student-wrap{max-width:980px;margin:auto}
+.student-hero{padding:23px;border-radius:24px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(21,26,46,.96),rgba(10,12,22,.97));box-shadow:var(--shadow)}
+.student-hero h1{font-size:clamp(2rem,5vw,3.4rem);margin:.25rem 0 .55rem}
+.student-hero p{margin:0;color:var(--muted);line-height:1.6}
+.student-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:13px;color:var(--muted)}
+.student-meta b{color:var(--gold2)}
+.answers{display:grid;gap:13px;margin-top:15px}
+.answer{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr) 230px 116px;align-items:center;gap:13px;padding:18px 17px 18px 21px;border-radius:19px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(25,30,52,.95),rgba(13,16,29,.98));box-shadow:0 13px 30px rgba(0,0,0,.24);overflow:hidden}
+.answer:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--cyan),var(--pink))}
+.answer.correct{background:linear-gradient(180deg,rgba(17,48,36,.96),rgba(9,24,18,.98));border-color:rgba(102,237,168,.3)}
+.answer.wrong{background:linear-gradient(180deg,rgba(58,19,29,.96),rgba(27,9,14,.98));border-color:rgba(255,117,131,.3)}
+.num{color:var(--gold2);font-weight:950;font-size:1.3rem}
+.solution{display:flex;align-items:center;justify-content:flex-end;gap:5px;font-family:Georgia,"Times New Roman",serif;font-size:1.15rem;white-space:nowrap}
+.solution input{width:100px;padding:10px;border-radius:10px;background:#080a12;border:1px solid rgba(255,255,255,.2);color:var(--text);text-align:center;outline:none;font-size:16px}
+.solution input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,203,88,.12)}
+.answer.correct input{border-color:var(--green);color:#c8ffe3}
+.answer.wrong input{border-color:var(--red);color:#ffd1d7}
+.feedback{font-weight:950;font-size:1.25rem;width:18px}
+.correct .feedback{color:var(--green)}
+.wrong .feedback{color:var(--red)}
+.student-bottom{position:sticky;bottom:10px;margin-top:17px;padding:13px 15px;border-radius:17px;background:rgba(8,10,18,.9);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.modal-layer{position:fixed;inset:0;background:rgba(0,0,0,.76);display:grid;place-items:center;padding:16px;z-index:100}
+.modal{width:min(440px,100%);border-radius:24px;padding:23px;background:linear-gradient(180deg,#1d2340,#0f1323);border:1px solid rgba(255,255,255,.14);box-shadow:var(--shadow)}
+.modal h3{margin:.1rem 0 .5rem;font-size:1.45rem}
+.modal p{color:var(--muted);line-height:1.5}
+.modal label{display:block;font-weight:850;margin:14px 0 7px}
+.modal input{width:100%;font-size:18px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:#080a12;color:var(--text);outline:none}
+.modal-status{margin-top:10px;min-height:20px;color:var(--muted);font-size:.84rem}
+.modal-status.error{color:var(--red)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:15px;flex-wrap:wrap}
+@media(max-width:1000px){.hero,.dashboard{grid-template-columns:1fr}.rules{grid-template-columns:1fr}.vault-scene{min-height:300px}}
+@media(max-width:760px){.qrow{grid-template-columns:38px minmax(0,1fr) 90px}.qsub{grid-column:2/4;text-align:left}.answer{grid-template-columns:38px minmax(0,1fr)}.solution{justify-content:flex-start}.answer .btn{grid-column:2}}
+@media(max-width:560px){.app{width:min(100% - 14px,1280px);padding-top:10px}.bulbs{grid-template-columns:repeat(15,1fr)}.live-head{align-items:flex-start;flex-direction:column}.answer{grid-template-columns:1fr}.answer .num{display:none}.answer .btn{grid-column:auto}.solution{justify-content:flex-start}.student-bottom{flex-direction:column;align-items:stretch}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'], ['$', '$']],
+    displayMath: [['\\[','\\]']],
+    processEscapes: true
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- Firebase compat SDK: deliberately non-module to keep the app simple and robust. -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+
+<body>
+<div id="teacherApp" class="app hidden">
+  <div class="topbar">
+    <div class="brand"><span class="logo">🔐</span> Système de déverrouillage</div>
+    <div class="top-actions">
+      <button id="clearBtn" class="btn danger tiny-btn" type="button">🗑 Effacer les données</button>
+      <div class="status" style="color:var(--gold2)">Version compatible Safari</div><div id="teacherStatus" class="status">● Initialisation...</div>
+    </div>
+  </div>
+
+  <div id="teacherMessage" class="message hidden"></div>
+
+  <section id="introScreen" class="stage">
+    <div class="bulbs">
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+    </div>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Défi d'ouverture de chapitre</div>
+        <h1>Déverrouillez<br>le coffre.</h1>
+        <p>
+          Pour accéder au premier chapitre, la classe doit prouver que les prérequis sont maîtrisés.
+          Chacun résout six équations individuellement. Chaque bonne réponse fragilise le coffre.
+        </p>
+
+        <div class="rules">
+          <div class="rule"><b>Règle 01</b><span>Travail individuel. Une réponse soumise ne peut plus être modifiée.</span></div>
+          <div class="rule"><b>Règle 02</b><span>Vous disposez de <strong>15 minutes</strong> pour résoudre les six équations.</span></div>
+          <div class="rule"><b>Règle 03</b><span>La classe doit atteindre au moins <strong>85 %</strong> de réussite globale.</span></div>
+        </div>
+
+        <div class="action-row">
+          <button id="startBtn" class="btn primary" type="button" onclick="window.__vaultOpenStart && window.__vaultOpenStart()">COMMENCER LE JEU</button>
+        </div>
+      </div>
+
+      <div id="introCoffre" class="vault-scene">
+        <div class="dial"></div>
+        <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span><span class="spark s4"></span>
+        <div class="vault-caption">
+          <strong>ACCÈS REFUSÉ</strong>
+          <div>Le contenu du chapitre reste classifié tant que le seuil de 85 % n'est pas atteint.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="liveScreen" class="hidden">
+    <div class="live-head">
+      <div><div class="eyebrow">Défi en cours</div><h2>Déverrouille le coffre</h2></div>
+      <div class="timer-box"><div class="timer-label">Temps restant</div><div id="timer" class="timer">15:00</div></div>
+    </div>
+
+    <div class="dashboard">
+      <div class="panel panel-pad">
+        <div id="questions" class="questions">
+          <div class="qrow" data-q="q1"><div class="lock"></div><div class="eq">\(x+3=7\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+          <div class="qrow" data-q="q2"><div class="lock"></div><div class="eq">\(2x=10\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+          <div class="qrow" data-q="q3"><div class="lock"></div><div class="eq">\(13-7x=2x+58\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+          <div class="qrow" data-q="q4"><div class="lock"></div><div class="eq">\(1-3(8-5y)=75-4(3y+11)\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+          <div class="qrow" data-q="q5"><div class="lock"></div><div class="eq">\(\dfrac{11-3x}{4}=\dfrac{17-5x}{6}\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+          <div class="qrow" data-q="q6"><div class="lock"></div><div class="eq">\((2-3x)(4x+3)=(6x+7)(3-2x)\)</div><div class="qpct">0.0%</div><div class="qsub">0 / 0 réponses</div></div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="panel score">
+          <div class="eyebrow">Progression du coffre</div>
+          <div id="ring" class="ring">
+            <div class="ring-content"><div id="overallPct" class="total">0.0%</div><div class="ring-caption">Réussite globale</div></div>
+          </div>
+          <div class="statline"><span>Seuil requis</span><b>85%</b></div>
+          <div class="statline"><span>Élèves attendus</span><b id="expected">—</b></div>
+          <div class="statline"><span>État du coffre</span><b id="vaultState">Verrouillé</b></div>
+          <div class="crack-progress">
+            <b id="crackText">Le perçage commence...</b>
+            <div class="track"><div id="progressFill" class="fill"></div></div>
+          </div>
+        </div>
+
+        <div class="panel join">
+          <div class="eyebrow">Accès élèves</div>
+          <img id="qrImg" class="qr" alt="QR code de la session">
+          <div id="sessionCode" class="code">------</div>
+          <div class="small">Scannez pour rejoindre la partie.</div>
+          <span id="studentUrl" class="student-url"></span>
+          <div class="action-row" style="justify-content:center">
+            <button id="startTimerBtn" class="btn primary" type="button">DÉMARRER LE CHRONOMÈTRE</button>
+            <button id="terminateBtn" class="btn danger" type="button">TERMINER L'ACTIVITÉ</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="hidden"></section>
+</div>
+
+<div id="studentApp" class="app hidden">
+  <div class="student-wrap">
+    <div class="topbar">
+      <div class="brand"><span class="logo">🎮</span> Déverrouille le coffre</div>
+      <div id="studentStatus" class="status">● Connexion...</div>
+    </div>
+
+    <section class="student-hero">
+      <div class="eyebrow">Défi individuel</div>
+      <h1>Ouvre les six verrous.</h1>
+      <p>
+        Résous chaque équation sur ta feuille, puis écris uniquement la valeur de la solution.
+        Une réponse soumise est définitive. La couleur t'indique immédiatement si elle est correcte,
+        mais la bonne réponse n'est jamais affichée.
+      </p>
+      <div class="student-meta">
+        <span>Session <b id="studentCode">------</b></span>
+        <span><b id="submittedCount">0</b> / 6 réponses soumises</span>
+      </div>
+    </section>
+
+    <div id="studentMessage" class="message hidden" style="margin-top:14px"></div>
+
+    <section class="answers">
+      <article class="answer" data-q="q1"><div class="num">01</div><div class="eq">\(x+3=7\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 1" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+      <article class="answer" data-q="q2"><div class="num">02</div><div class="eq">\(2x=10\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 2" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+      <article class="answer" data-q="q3"><div class="num">03</div><div class="eq">\(13-7x=2x+58\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 3" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+      <article class="answer" data-q="q4"><div class="num">04</div><div class="eq">\(1-3(8-5y)=75-4(3y+11)\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 4" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+      <article class="answer" data-q="q5"><div class="num">05</div><div class="eq">\(\dfrac{11-3x}{4}=\dfrac{17-5x}{6}\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 5" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+      <article class="answer" data-q="q6"><div class="num">06</div><div class="eq">\((2-3x)(4x+3)=(6x+7)(3-2x)\)</div><div class="solution"><span>\(S=\{\)</span> <input aria-label="Réponse 6" inputmode="decimal" autocomplete="off"> <span>\(\}\)</span> <span class="feedback"></span></div><button class="btn secondary submitOne" type="button">Soumettre</button></article>
+    </section>
+
+    <div class="student-bottom">
+      <span class="small">Soumets les réponses une par une, ou toutes les cases déjà remplies.</span>
+      <button id="submitAllBtn" class="btn primary" type="button">SOUMETTRE TOUT</button>
+    </div>
+  </div>
+</div>
+
+<div id="startModal" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="startModalTitle">
+  <div class="modal">
+    <div class="eyebrow">Préparation de la partie</div>
+    <h3 id="startModalTitle">Combien d'élèves jouent ?</h3>
+    <p>Ce nombre sert à calculer les pourcentages. Une réponse non soumise compte donc comme non réussie.</p>
+    <label for="studentCountInput">Nombre d'élèves</label>
+    <input id="studentCountInput" type="number" min="1" max="80" step="1" value="20">
+    <div id="startModalStatus" class="modal-status"></div>
+    <div class="modal-actions">
+      <button id="cancelStartBtn" class="btn secondary" type="button">Annuler</button>
+      <button id="launchBtn" class="btn primary" type="button">LANCER LES 15 MINUTES</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAueBbZIT_55yFaFptS2yzYGDnGuHXXqaY",
+  authDomain: "c---inequations-locker.firebaseapp.com",
+  databaseURL: "https://c---inequations-locker-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "c---inequations-locker",
+  storageBucket: "c---inequations-locker.firebasestorage.app",
+  messagingSenderId: "472803081756",
+  appId: "1:472803081756:web:d0f8c4cf196729f1fae9d9",
+  measurementId: "G-EMXETFVJJ7"
+};
+
+const THRESHOLD = 85;
+const DURATION = 15 * 60;
+const QS = ["q1","q2","q3","q4","q5","q6"];
+const ANSWER_CHECKS = {
+  q1:["vault-q1-9f2","2a53f5ef3f62d4ba2acc404fed0cf7ddd4a35cded4924b2f9ca7d1096c30ac3e"],
+  q2:["vault-q2-31a","37f39bd16f0b6261d55df61cc9e58b9570ad7c328efbf0e1abf041fe2a12dc3e"],
+  q3:["vault-q3-a72","ecdf545098f59531b6b085da50172c3687739ef943724955183b7307ddfe2386"],
+  q4:["vault-q4-cc8","6da52515f3af950cfa7cd758756fc0695a831805eba66cd12c69931aa84bd8de"],
+  q5:["vault-q5-4bd","89acb80c2fd739b43cb80d7743e9ae0c5c0076c5c06cfcd2f49c8dddd2a288b4"],
+  q6:["vault-q6-e15","e71165cf2612b160e1e6825019f21a63eb9b85a6efc2a18f12d098fad1b8a754"]
+};
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+let db = null;
+let authReady = false;
+let firebaseError = null;
+let currentSession = null;
+let liveData = null;
+let timerHandle = null;
+let teacherListener = null;
+let studentSessionListener = null;
+let studentAnswerListener = null;
+
+function show(el){ el.classList.remove("hidden"); }
+function hide(el){ el.classList.add("hidden"); }
+function setStatus(el,text,type){
+  el.textContent = "● " + text;
+  el.classList.remove("ok","bad");
+  if(type) el.classList.add(type);
+}
+function teacherMessage(text){
+  const el=$("#teacherMessage");
+  el.textContent=text;
+  show(el);
+}
+function studentMessage(text){
+  const el=$("#studentMessage");
+  el.textContent=text;
+  show(el);
+}
+function modalStatus(text,error){
+  const el=$("#startModalStatus");
+  el.textContent=text || "";
+  el.classList.toggle("error",!!error);
+}
+
+function initFirebase(){
+  try{
+    if(!window.firebase) throw new Error("Firebase SDK not loaded");
+    if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    firebase.auth().signInAnonymously()
+      .then(function(){
+        authReady=true;
+        firebaseError=null;
+        if($("#teacherApp") && !$("#teacherApp").classList.contains("hidden"))
+          setStatus($("#teacherStatus"),"Firebase prêt","ok");
+        if($("#studentApp") && !$("#studentApp").classList.contains("hidden"))
+          setStatus($("#studentStatus"),"Connecté","ok");
+      })
+      .catch(function(err){
+        authReady=false;
+        firebaseError=err;
+        if($("#teacherApp") && !$("#teacherApp").classList.contains("hidden"))
+          setStatus($("#teacherStatus"),"Firebase non connecté","bad");
+        if($("#studentApp") && !$("#studentApp").classList.contains("hidden"))
+          setStatus($("#studentStatus"),"Connexion impossible","bad");
+        console.error(err);
+      });
+  }catch(err){
+    firebaseError=err;
+    authReady=false;
+    console.error(err);
+  }
+}
+
+function waitForFirebase(timeoutMs){
+  timeoutMs = timeoutMs || 10000;
+  return new Promise(function(resolve,reject){
+    const started=Date.now();
+    (function check(){
+      if(authReady && db) return resolve();
+      if(firebaseError) return reject(firebaseError);
+      if(Date.now()-started>timeoutMs) return reject(new Error("Firebase timeout"));
+      setTimeout(check,120);
+    })();
+  });
+}
+
+function randomCode(){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const arr=new Uint32Array(6);
+  crypto.getRandomValues(arr);
+  let out="";
+  for(let i=0;i<arr.length;i++) out += chars[arr[i]%chars.length];
+  return out;
+}
+
+function studentUrl(session){
+  const u=new URL(location.href);
+  u.search="";
+  u.hash="";
+  u.searchParams.set("view","submit");
+  u.searchParams.set("session",session);
+  return u.toString();
+}
+
+function participantId(session){
+  const key="vaultPlayer:"+session;
+  let id=localStorage.getItem(key);
+  if(!id){
+    id=(crypto.randomUUID ? crypto.randomUUID() : "p-"+Date.now()+"-"+Math.random().toString(36).slice(2));
+    localStorage.setItem(key,id);
+  }
+  return id;
+}
+
+function normalize(raw){
+  let s=String(raw==null?"":raw).trim().toLowerCase()
+    .replace(/[−–—]/g,"-").replace(/,/g,".").replace(/\s+/g,"");
+  s=s.replace(/^s=/,"").replace(/^x=/,"").replace(/^y=/,"");
+  if(s[0]==="{" && s[s.length-1]==="}") s=s.slice(1,-1);
+  if(/^[-+]?\d+(?:\.\d+)?$/.test(s)){
+    const n=Number(s);
+    if(Number.isFinite(n)) return String(n);
+  }
+  if(/^[-+]?\d+\/[-+]?\d+$/.test(s)){
+    const p=s.split("/").map(Number);
+    if(Number.isFinite(p[0]) && Number.isFinite(p[1]) && p[1]!==0) return String(p[0]/p[1]);
+  }
+  return s;
+}
+
+async function sha256(text){
+  const bytes=new TextEncoder().encode(text);
+  const digest=await crypto.subtle.digest("SHA-256",bytes);
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function correctAnswer(q,raw){
+  const normalized=normalize(raw);
+  if(!normalized) return false;
+  const c=ANSWER_CHECKS[q];
+  return (await sha256(c[0]+normalized))===c[1];
+}
+
+function compute(data){
+  const expected=Math.max(1,Number(data && data.studentCount || 1));
+  const people=(data && data.participants)||{};
+  const stats={};
+  let totalCorrect=0;
+  QS.forEach(function(q){
+    let correct=0,submitted=0;
+    Object.keys(people).forEach(function(pid){
+      const a=people[pid] && people[pid].answers && people[pid].answers[q];
+      if(a){
+        submitted++;
+        if(a.correct===true) correct++;
+      }
+    });
+    stats[q]={correct:correct,submitted:submitted,percent:correct/expected*100};
+    totalCorrect += correct;
+  });
+  return {expected:expected,stats:stats,overall:totalCorrect/(expected*QS.length)*100};
+}
+
+function renderTeacher(data){
+  liveData=data;
+  if(!data) return;
+  const r=compute(data);
+  $("#expected").textContent=r.expected;
+
+  QS.forEach(function(q){
+    const row=document.querySelector('.qrow[data-q="'+q+'"]');
+    const s=r.stats[q];
+    row.querySelector(".qpct").textContent=s.percent.toFixed(1)+"%";
+    row.querySelector(".qsub").textContent=s.submitted+" / "+r.expected+" réponses";
+    row.querySelector(".lock").classList.toggle("open",s.percent>=THRESHOLD);
+  });
+
+  $("#overallPct").textContent=r.overall.toFixed(1)+"%";
+  const deg=Math.max(0,Math.min(360,r.overall*3.6));
+  $("#ring").style.background="conic-gradient("+(r.overall>=THRESHOLD?"var(--green)":"var(--gold)")+" "+deg+"deg,#30364b "+deg+"deg)";
+  $("#progressFill").style.width=Math.max(0,Math.min(100,r.overall))+"%";
+
+  if(r.overall>=THRESHOLD){
+    $("#vaultState").textContent="Forcé";
+    $("#crackText").textContent="Le dernier verrou cède !";
+  }else if(r.overall>=60){
+    $("#vaultState").textContent="Très fragilisé";
+    $("#crackText").textContent="Le mécanisme craque...";
+  }else if(r.overall>=30){
+    $("#vaultState").textContent="Fragilisé";
+    $("#crackText").textContent="Des fissures apparaissent...";
+  }else{
+    $("#vaultState").textContent="Verrouillé";
+    $("#crackText").textContent="Le perçage commence...";
+  }
+
+  if(data.status==="closed") showResult(data);
+}
+
+function subscribeTeacher(session){
+  if(teacherListener) db.ref("sessions/"+session).off("value",teacherListener);
+  teacherListener=function(snap){
+    const d=snap.val();
+    if(!d) return;
+    renderTeacher(d);
+    if(d.status==="waiting"){
+      clearInterval(timerHandle);
+      renderWaitingState(d);
+    }else if(d.status==="running"){
+      const btn=$("#startTimerBtn");
+      if(btn){
+        btn.disabled=true;
+        btn.textContent="CHRONOMÈTRE EN COURS";
+      }
+      startTimer(d);
+    }
+  };
+  db.ref("sessions/"+session).on("value",teacherListener);
+}
+
+
+function renderWaitingState(data){
+  const timerEl=$("#timer");
+  if(timerEl){
+    timerEl.textContent="15:00";
+    timerEl.classList.remove("warn");
+  }
+  const btn=$("#startTimerBtn");
+  if(btn){
+    btn.disabled=false;
+    btn.textContent="DÉMARRER LE CHRONOMÈTRE";
+  }
+}
+
+async function launchClock(){
+  if(!currentSession || !db) return;
+  try{
+    await db.ref("sessions/"+currentSession).update({
+      status:"running",
+      startedAt:Date.now()
+    });
+  }catch(e){
+    console.error(e);
+    teacherMessage("Impossible de démarrer le chronomètre. Vérifie la connexion Firebase.");
+  }
+}
+
+function startTimer(data){
+  clearInterval(timerHandle);
+  function tick(){
+    if(!data || data.status!=="running") return;
+    const end=Number(data.startedAt)+Number(data.durationSeconds||DURATION)*1000;
+    const left=Math.max(0,Math.ceil((end-Date.now())/1000));
+    const m=String(Math.floor(left/60)).padStart(2,"0");
+    const s=String(left%60).padStart(2,"0");
+    $("#timer").textContent=m+":"+s;
+    $("#timer").classList.toggle("warn",left<=120);
+    if(left<=0){
+      clearInterval(timerHandle);
+      terminateSession(true);
+    }
+  }
+  tick();
+  timerHandle=setInterval(tick,500);
+}
+
+async function createSession(n){
+  currentSession=randomCode();
+  const data={
+    status:"waiting",
+    studentCount:n,
+    threshold:THRESHOLD,
+    startedAt:null,
+    durationSeconds:DURATION,
+    createdAt:Date.now()
+  };
+  await db.ref("sessions/"+currentSession).set(data);
+  localStorage.setItem("vaultLastSession",currentSession);
+
+  const url=studentUrl(currentSession);
+  $("#sessionCode").textContent=currentSession;
+  $("#studentUrl").textContent=url;
+  $("#qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data="+encodeURIComponent(url);
+
+  hide($("#introScreen"));
+  show($("#liveScreen"));
+  subscribeTeacher(currentSession);
+  renderTeacher(data);
+  renderWaitingState(data);
+}
+
+async function terminateSession(auto){
+  if(!currentSession || !liveData || liveData.status!=="running") return;
+  if(!auto && !confirm("Terminer l'activité maintenant ? Les élèves ne pourront plus soumettre de réponses.")) return;
+  const final=compute(liveData).overall;
+  await db.ref("sessions/"+currentSession).update({status:"closed",endedAt:Date.now(),finalOverall:final});
+}
+
+function showResult(data){
+  clearInterval(timerHandle);
+  hide($("#liveScreen"));
+  const r=compute(data);
+  const success=r.overall>=THRESHOLD;
+  const box=$("#resultScreen");
+  box.className="result "+(success?"success":"fail");
+  if(success){
+    box.innerHTML='<div class="eyebrow">Accès autorisé</div>'+
+      '<h2>COFFRE OUVERT</h2>'+
+      '<p>Taux de réussite final : <strong style="color:var(--green)">'+r.overall.toFixed(1)+'%</strong></p>'+
+      '<div class="reveal">CHAPITRE 1 — INÉQUATIONS</div>';
+  }else{
+    box.innerHTML='<div class="eyebrow">Accès refusé</div>'+
+      '<h2>LE COFFRE RESTE VERROUILLÉ</h2>'+
+      '<p>Taux de réussite final : <strong style="color:var(--red)">'+r.overall.toFixed(1)+'%</strong>. Une courte révision est nécessaire.</p>'+
+      '<div class="redacted">CHAPITRE 1 — ██████████</div>';
+  }
+  show(box);
+}
+
+async function clearData(){
+  try{
+    await waitForFirebase();
+  }catch(e){
+    teacherMessage("Impossible de contacter Firebase. Vérifie Anonymous Authentication et les règles de la Realtime Database.");
+    return;
+  }
+  if(!confirm("Effacer TOUTES les sessions, réponses et statistiques du jeu ?")) return;
+  const word=prompt('Pour confirmer, écris exactement : EFFACER');
+  if(word!=="EFFACER"){ alert("Suppression annulée."); return; }
+  await db.ref("sessions").remove();
+  localStorage.removeItem("vaultLastSession");
+  alert("Toutes les données du jeu ont été effacées.");
+  location.href=location.pathname;
+}
+
+function lockCard(card,correct){
+  card.classList.remove("correct","wrong");
+  card.classList.add(correct?"correct":"wrong");
+  const input=card.querySelector("input");
+  const btn=card.querySelector(".submitOne");
+  input.disabled=true;
+  btn.disabled=true;
+  btn.textContent="Soumis";
+  card.querySelector(".feedback").textContent=correct?"✓":"×";
+}
+
+function refreshStudentCount(){
+  const done=$$(".answer").filter(function(c){return c.classList.contains("correct")||c.classList.contains("wrong")}).length;
+  $("#submittedCount").textContent=done;
+  $("#submitAllBtn").disabled=done>=6 || (liveData && liveData.status==="closed");
+}
+
+async function submitOne(session,pid,card){
+  if(!liveData || liveData.status!=="running") return;
+  const q=card.dataset.q;
+  const input=card.querySelector("input");
+  const raw=input.value;
+  if(!raw.trim()){ input.focus(); return; }
+
+  const ok=await correctAnswer(q,raw);
+  const ref=db.ref("sessions/"+session+"/participants/"+pid+"/answers/"+q);
+  const result=await ref.transaction(function(current){
+    if(current!==null) return;
+    return {correct:ok,submittedAt:Date.now()};
+  });
+
+  if(result.committed){
+    lockCard(card,ok);
+  }else if(result.snapshot && result.snapshot.val()){
+    lockCard(card,result.snapshot.val().correct===true);
+  }
+  refreshStudentCount();
+}
+
+window.__vaultOpenStart = function(){
+  try{
+    const modal=document.getElementById("startModal");
+    const input=document.getElementById("studentCountInput");
+    const status=document.getElementById("startModalStatus");
+    if(status){
+      status.textContent="";
+      status.classList.remove("error");
+    }
+    if(modal) modal.classList.remove("hidden");
+    if(input) setTimeout(function(){ try{ input.focus(); }catch(e){} },30);
+  }catch(e){
+    console.error("Could not open start modal:",e);
+  }
+};
+
+async function initTeacher(){
+  show($("#teacherApp"));
+
+  // Critical: bind START immediately, before any Firebase check.
+  $("#startBtn").addEventListener("click",function(){
+    window.__vaultOpenStart();
+  });
+
+  let startTouchHandled=false;
+  $("#startBtn").addEventListener("touchend",function(e){
+    if(startTouchHandled) return;
+    startTouchHandled=true;
+    window.__vaultOpenStart();
+    setTimeout(function(){ startTouchHandled=false; },500);
+  },{passive:true});
+
+  $("#cancelStartBtn").addEventListener("click",function(){
+    hide($("#startModal"));
+  });
+
+  $("#startModal").addEventListener("click",function(e){
+    if(e.target===$("#startModal")) hide($("#startModal"));
+  });
+
+  $("#launchBtn").addEventListener("click",async function(){
+    const n=Math.floor(Number($("#studentCountInput").value));
+    if(!Number.isFinite(n)||n<1||n>80){
+      modalStatus("Introduis un nombre d'élèves entre 1 et 80.",true);
+      return;
+    }
+
+    const btn=$("#launchBtn");
+    btn.disabled=true;
+    btn.textContent="CONNEXION...";
+    modalStatus("Connexion à Firebase...",false);
+
+    try{
+      await waitForFirebase(10000);
+      modalStatus("Création de la session...",false);
+      await createSession(n);
+      hide($("#startModal"));
+    }catch(e){
+      console.error(e);
+      modalStatus("Impossible de créer la session. Vérifie Firebase Authentication → Anonymous et les règles Realtime Database.",true);
+    }finally{
+      btn.disabled=false;
+      btn.textContent="LANCER LES 15 MINUTES";
+    }
+  });
+
+  $("#startTimerBtn").addEventListener("click",launchClock);
+  $("#terminateBtn").addEventListener("click",function(){terminateSession(false)});
+  $("#clearBtn").addEventListener("click",clearData);
+
+  if(location.protocol==="file:"){
+    setStatus($("#teacherStatus"),"Ouvre le jeu depuis ton site HTTPS","bad");
+    teacherMessage("Tu as ouvert le fichier directement. Pour la classe et le QR code, utilise l'URL GitHub Pages/Netlify du site.");
+  }
+
+  // Firebase can initialize independently; it never controls whether Start is clickable.
+  if(authReady) setStatus($("#teacherStatus"),"Firebase prêt","ok");
+  else setStatus($("#teacherStatus"),"Connexion Firebase...");
+
+  try{
+    await waitForFirebase(10000);
+    setStatus($("#teacherStatus"),"Firebase prêt","ok");
+
+    const last=localStorage.getItem("vaultLastSession");
+    if(last){
+      const snap=await db.ref("sessions/"+last).once("value");
+      const d=snap.val();
+      if(d && (d.status==="waiting" || d.status==="running")){
+        currentSession=last;
+        liveData=d;
+        const url=studentUrl(last);
+        $("#sessionCode").textContent=last;
+        $("#studentUrl").textContent=url;
+        $("#qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data="+encodeURIComponent(url);
+        hide($("#introScreen"));
+        show($("#liveScreen"));
+        subscribeTeacher(last);
+        renderTeacher(d);
+        if(d.status==="waiting") renderWaitingState(d);
+        else startTimer(d);
+      }else if(!d){
+        localStorage.removeItem("vaultLastSession");
+      }
+    }
+  }catch(e){
+    setStatus($("#teacherStatus"),"Firebase non connecté","bad");
+    teacherMessage("Le bouton COMMENCER LE JEU reste fonctionnel. Si le lancement de la session échoue, vérifie Anonymous Authentication et les règles de la Realtime Database.");
+  }
+}
+
+async function initStudent(session){
+  show($("#studentApp"));
+  $("#studentCode").textContent=session||"------";
+  if(!session){
+    setStatus($("#studentStatus"),"Session manquante","bad");
+    studentMessage("Lien invalide. Scanne le QR code affiché par le professeur.");
+    $$(".submitOne").forEach(b=>b.disabled=true);
+    $("#submitAllBtn").disabled=true;
+    return;
+  }
+
+  try{
+    await waitForFirebase(10000);
+    setStatus($("#studentStatus"),"Connecté","ok");
+  }catch(e){
+    setStatus($("#studentStatus"),"Connexion impossible","bad");
+    studentMessage("Impossible de se connecter à Firebase. Préviens le professeur.");
+    $$(".submitOne").forEach(b=>b.disabled=true);
+    $("#submitAllBtn").disabled=true;
+    return;
+  }
+
+  const snap=await db.ref("sessions/"+session).once("value");
+  if(!snap.exists()){
+    setStatus($("#studentStatus"),"Session introuvable","bad");
+    studentMessage("Cette session n'existe pas ou a été effacée.");
+    $$(".submitOne").forEach(b=>b.disabled=true);
+    $("#submitAllBtn").disabled=true;
+    return;
+  }
+
+  const pid=participantId(session);
+  const sessionRef=db.ref("sessions/"+session);
+  studentSessionListener=function(s){
+    liveData=s.val();
+    if(!liveData){
+      studentMessage("Cette session a été effacée par le professeur.");
+      $$(".answer input").forEach(i=>i.disabled=true);
+      $$(".submitOne").forEach(b=>b.disabled=true);
+      $("#submitAllBtn").disabled=true;
+      return;
+    }
+    if(liveData.status==="waiting"){
+      studentMessage("Tu as rejoint la partie. Attends que le professeur démarre le chronomètre.");
+      $$(".answer input").forEach(i=>{
+        const card=i.closest(".answer");
+        const already=card && (card.classList.contains("correct") || card.classList.contains("wrong"));
+        if(!already) i.disabled=true;
+      });
+      $$(".submitOne").forEach(b=>{
+        const card=b.closest(".answer");
+        const already=card && (card.classList.contains("correct") || card.classList.contains("wrong"));
+        if(!already) b.disabled=true;
+      });
+      $("#submitAllBtn").disabled=true;
+    }else if(liveData.status==="running"){
+      const msg=$("#studentMessage");
+      if(msg){ msg.classList.add("hidden"); msg.textContent=""; }
+      $$(".answer").forEach(card=>{
+        const already=card.classList.contains("correct") || card.classList.contains("wrong");
+        if(!already){
+          const input=card.querySelector("input");
+          const b=card.querySelector(".submitOne");
+          if(input) input.disabled=false;
+          if(b) b.disabled=false;
+        }
+      });
+      refreshStudentCount();
+    }else if(liveData.status==="closed"){
+      studentMessage("La session est terminée. Les nouvelles réponses ne sont plus acceptées.");
+      $$(".answer input").forEach(i=>i.disabled=true);
+      $$(".submitOne").forEach(b=>b.disabled=true);
+      $("#submitAllBtn").disabled=true;
+    }
+  };
+  sessionRef.on("value",studentSessionListener);
+
+  const ansRef=db.ref("sessions/"+session+"/participants/"+pid+"/answers");
+  studentAnswerListener=function(s){
+    const answers=s.val()||{};
+    Object.keys(answers).forEach(function(q){
+      const card=document.querySelector('.answer[data-q="'+q+'"]');
+      if(card) lockCard(card,answers[q].correct===true);
+    });
+    refreshStudentCount();
+  };
+  ansRef.on("value",studentAnswerListener);
+
+  $$(".submitOne").forEach(function(btn){
+    btn.addEventListener("click",async function(){
+      const card=btn.closest(".answer");
+      btn.disabled=true;
+      try{ await submitOne(session,pid,card); }
+      catch(e){ console.error(e); studentMessage("La réponse n'a pas pu être envoyée. Vérifie ta connexion."); }
+      if(!card.classList.contains("correct")&&!card.classList.contains("wrong")&&liveData&&liveData.status==="running") btn.disabled=false;
+    });
+  });
+
+  $("#submitAllBtn").addEventListener("click",async function(){
+    const cards=$$(".answer").filter(function(card){
+      return !card.classList.contains("correct")&&!card.classList.contains("wrong")&&card.querySelector("input").value.trim();
+    });
+    if(!cards.length){ studentMessage("Aucune nouvelle réponse remplie à soumettre."); return; }
+    $("#submitAllBtn").disabled=true;
+    for(const card of cards){
+      try{ await submitOne(session,pid,card); }catch(e){ console.error(e); }
+    }
+    refreshStudentCount();
+  });
+}
+
+
+function typesetMath(){
+  try{
+    if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+  }catch(e){ console.warn("Rendu mathématique:",e); }
+}
+
+function boot(){
+  // Safari can retain an older GitHub Pages build very aggressively.
+  // This marker makes it easy to verify which version is actually loaded.
+  try{
+    if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)){
+      console.info("Déverrouille le coffre: Version compatible Safari 2026-08-30");
+    }
+  }catch(e){}
+
+  // Start Firebase, but do not await it.
+  initFirebase();
+  setTimeout(typesetMath,600);
+  setTimeout(typesetMath,1600);
+
+  const params=new URLSearchParams(location.search);
+  if(params.get("view")==="submit"){
+    initStudent((params.get("session")||"").toUpperCase());
+  }else{
+    initTeacher();
+  }
+}
+
+boot();
+})();
+</script>
+</body>
+</html>
