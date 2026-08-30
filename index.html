@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#090a11" />
+  <title>Chapter Unlock Game Show</title>
+
+  <style>
+    :root{
+      --bg:#070810;
+      --bg2:#0d1020;
+      --panel:#12162a;
+      --panel2:#1a1f36;
+      --ink:#f4f6ff;
+      --muted:#aeb5d3;
+      --gold:#f6cd54;
+      --gold2:#ffe58f;
+      --blue:#67d5ff;
+      --pink:#ff4ecd;
+      --green:#61f0a6;
+      --red:#ff6f7f;
+      --purple:#805eff;
+      --line:rgba(255,255,255,.13);
+      --glass:rgba(19,22,42,.66);
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --r:22px;
+      --metal:url('https://commons.wikimedia.org/wiki/Special:FilePath/Old%20Vault%20Door.jpg');
+      --vault:url('https://commons.wikimedia.org/wiki/Special:FilePath/Hall%27s%20Safe%20%26%20Lock%20Co%20Vault%20Door.jpg');
+      --combo:url('https://commons.wikimedia.org/wiki/Special:FilePath/Yellow-green%20combination%20lock.jpg');
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;min-height:100%;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(circle at 20% 15%, #26235c 0, rgba(38,35,92,0) 28%),radial-gradient(circle at 82% 22%, rgba(255,78,205,.16) 0, rgba(255,78,205,0) 20%),linear-gradient(180deg,#070810,#090b18 32%,#06070f 100%);overflow-x:hidden}
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;mix-blend-mode:screen;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 80px);
+    }
+    body::after{
+      content:"";position:fixed;inset:-20%;pointer-events:none;opacity:.22;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,235,140,.25), transparent 28%),
+        radial-gradient(circle at 82% 4%, rgba(103,213,255,.18), transparent 26%),
+        radial-gradient(circle at 50% 120%, rgba(255,78,205,.18), transparent 22%);
+      filter:blur(30px);
+      animation:ambientGlow 10s ease-in-out infinite alternate;
+    }
+    @keyframes ambientGlow{from{transform:translateY(-10px)}to{transform:translateY(10px)}}
+
+    .hidden{display:none !important}
+    .page{width:min(1280px,calc(100% - 24px));margin:0 auto;padding:18px 0 46px;position:relative;z-index:1}
+    button,input,textarea{font:inherit}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2)}
+    .brand-badge{width:36px;height:36px;border-radius:12px;border:1px solid rgba(255,229,143,.4);display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,229,143,.18),rgba(255,229,143,.05));box-shadow:0 0 16px rgba(255,229,143,.18)}
+    .status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(9,12,23,.85);backdrop-filter:blur(10px);color:var(--muted)}
+    .top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn-clear{color:#ffd6da;background:rgba(72,18,27,.72);border:1px solid rgba(255,111,127,.32);padding:10px 14px;min-height:40px;border-radius:12px;font-weight:900;cursor:pointer;transition:transform .14s ease,filter .14s ease}
+    .btn-clear:hover{transform:translateY(-1px);filter:brightness(1.08)}
+
+    .lights{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    .light{position:absolute;top:-180px;width:32vw;height:72vh;opacity:.16;filter:blur(2px);transform-origin:top center;animation:scan 11s ease-in-out infinite alternate}
+    .light.left{left:-8vw;background:linear-gradient(180deg,rgba(255,244,177,.9),rgba(255,244,177,0));clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);animation-delay:-2s}
+    .light.mid{left:34vw;background:linear-gradient(180deg,rgba(103,213,255,.82),rgba(103,213,255,0));clip-path:polygon(46% 0,54% 0,80% 100%,20% 100%);animation-duration:8s}
+    .light.right{right:-10vw;background:linear-gradient(180deg,rgba(255,78,205,.82),rgba(255,78,205,0));clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);animation-delay:-4s}
+    @keyframes scan{0%{transform:rotate(-18deg)}50%{transform:rotate(4deg)}100%{transform:rotate(18deg)}}
+
+    .marquee{position:relative;padding:20px 22px 22px;border-radius:26px;background:linear-gradient(180deg,rgba(8,10,18,.88),rgba(16,19,34,.92));border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);overflow:hidden}
+    .marquee::before{content:"";position:absolute;inset:0;border-radius:26px;padding:3px;background:linear-gradient(90deg,var(--gold),var(--pink),var(--blue),var(--gold));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.8}
+    .bulb-row{display:grid;grid-template-columns:repeat(28,1fr);gap:6px;margin-bottom:14px}
+    .bulb{height:12px;border-radius:999px;background:#3e2b10;box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;animation:blink 1.5s steps(2,end) infinite}
+    .bulb:nth-child(odd){background:var(--gold);box-shadow:0 0 10px rgba(246,205,84,.8),0 0 20px rgba(246,205,84,.4);animation-delay:.3s}
+    .bulb:nth-child(3n){background:var(--blue);box-shadow:0 0 10px rgba(103,213,255,.8),0 0 20px rgba(103,213,255,.35);animation-delay:.6s}
+    .bulb:nth-child(4n){background:var(--pink);box-shadow:0 0 10px rgba(255,78,205,.85),0 0 20px rgba(255,78,205,.35);animation-delay:.9s}
+    @keyframes blink{50%{opacity:.65}}
+
+    .hero-stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:18px;align-items:stretch}
+    .hero-copy{padding:8px 4px 2px}
+    .eyebrow{font-size:.78rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:var(--gold2)}
+    .hero-copy h1{margin:.35rem 0 .75rem;font-size:clamp(2.1rem,5vw,4.2rem);line-height:.94;letter-spacing:-.04em;text-shadow:0 0 24px rgba(255,229,143,.12)}
+    .hero-copy p{margin:0;color:var(--muted);max-width:720px;line-height:1.65;font-size:1.04rem}
+
+    .vault-display{position:relative;min-height:320px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(11,13,24,.7),rgba(20,23,39,.85));isolation:isolate}
+    .vault-display::before{content:"";position:absolute;inset:0;background-image:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.22)),var(--vault);background-size:cover;background-position:center;transform:scale(1.05);filter:saturate(.82) contrast(1.06) brightness(.72)}
+    .vault-display::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(103,213,255,.16),transparent 32%),linear-gradient(90deg,rgba(255,229,143,.06),transparent 24%,transparent 76%,rgba(255,78,205,.06));}
+    .crack-lines{position:absolute;inset:0;pointer-events:none;z-index:2}
+    .crack-line{position:absolute;left:50%;top:50%;width:2px;height:0;background:linear-gradient(180deg,rgba(103,213,255,0),rgba(103,213,255,.9),rgba(255,229,143,.2));transform-origin:bottom center;filter:drop-shadow(0 0 12px rgba(103,213,255,.7));transition:height .45s ease, opacity .45s ease;opacity:.3}
+    .crack-line:nth-child(1){transform:translate(-50%,-50%) rotate(-42deg)}
+    .crack-line:nth-child(2){transform:translate(-50%,-50%) rotate(-12deg)}
+    .crack-line:nth-child(3){transform:translate(-50%,-50%) rotate(14deg)}
+    .crack-line:nth-child(4){transform:translate(-50%,-50%) rotate(44deg)}
+    .crack-line.active{height:110px;opacity:1}
+
+    .vault-overlay{position:absolute;inset:auto 0 0 0;z-index:3;padding:18px;background:linear-gradient(180deg,rgba(6,7,15,0),rgba(6,7,15,.92) 35%,rgba(6,7,15,.96))}
+    .vault-tag{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,229,143,.26);background:rgba(16,18,29,.7);backdrop-filter:blur(10px);font-size:.76rem;color:var(--gold2);text-transform:uppercase;letter-spacing:.12em;font-weight:900}
+    .vault-caption{margin-top:12px;font-size:1.1rem;font-weight:800}
+    .vault-small{margin-top:8px;color:var(--muted);font-size:.93rem}
+
+    .rule-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .rule-card{position:relative;padding:18px;border-radius:20px;background:linear-gradient(180deg,rgba(24,28,48,.92),rgba(15,18,32,.9));border:1px solid rgba(255,255,255,.1);overflow:hidden}
+    .rule-card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(180deg,var(--gold),var(--pink));opacity:.9}
+    .rule-card strong{display:block;color:var(--gold2);letter-spacing:.12em;text-transform:uppercase;font-size:.76rem;margin-bottom:7px}
+    .rule-card p{margin:0;color:var(--muted);line-height:1.55}
+
+    .action-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}
+    .btn{appearance:none;border:0;padding:13px 20px;min-height:48px;border-radius:14px;cursor:pointer;font-weight:900;letter-spacing:.03em;transition:transform .14s ease,filter .14s ease,opacity .14s ease,box-shadow .14s ease}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+    .btn-primary{color:#171109;background:linear-gradient(180deg,var(--gold2),var(--gold));box-shadow:0 0 22px rgba(246,205,84,.22)}
+    .btn-secondary{color:#eef1ff;background:linear-gradient(180deg,#283154,#1a2039);border:1px solid rgba(255,255,255,.08)}
+    .btn-danger{color:#ffd2d6;background:linear-gradient(180deg,#5b1f2e,#34121a);box-shadow:0 0 20px rgba(255,111,127,.14)}
+
+    .dashboard{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;margin-top:18px}
+    .panel{position:relative;background:linear-gradient(180deg,rgba(16,19,34,.92),rgba(10,12,22,.94));border:1px solid rgba(255,255,255,.11);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+    .panel::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 18%,transparent 82%,rgba(255,255,255,.02))}
+    .panel-pad{padding:18px}
+    .overview-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:14px}
+    .overview-head h2{margin:.3rem 0 0;font-size:2rem;letter-spacing:-.04em}
+
+    .timer-wrap{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:linear-gradient(180deg,rgba(42,49,84,.85),rgba(18,22,40,.9));border:1px solid rgba(255,255,255,.09)}
+    .timer-wrap .tiny{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold2);font-weight:900}
+    .timer{font-variant-numeric:tabular-nums;font-weight:950;font-size:2.2rem;line-height:1}
+    .timer.warn{color:var(--red);text-shadow:0 0 14px rgba(255,111,127,.38);animation:pulse 1s infinite}
+    @keyframes pulse{50%{transform:scale(1.03)}}
+
+    .stage-strip{display:grid;grid-template-columns:repeat(20,1fr);gap:6px;margin-bottom:10px}
+    .stage-strip span{height:6px;border-radius:999px;background:rgba(255,255,255,.08)}
+    .stage-strip span:nth-child(odd){background:linear-gradient(90deg,var(--blue),var(--pink));opacity:.7;animation:blink 1.9s infinite}
+
+    .question-list{display:grid;gap:12px}
+    .q-card{position:relative;display:grid;grid-template-columns:46px minmax(0,1fr) 128px 126px;align-items:center;gap:14px;padding:18px;border-radius:18px;background:linear-gradient(180deg,rgba(25,30,52,.94),rgba(17,21,37,.98));border:1px solid rgba(255,255,255,.09);overflow:hidden}
+    .q-card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--gold),var(--pink));opacity:.85}
+    .mini-lock{position:relative;width:30px;height:24px;border-radius:6px;border:2px solid #6b748f;margin:auto;background:rgba(255,255,255,.04);transition:all .25s ease}
+    .mini-lock::before{content:"";position:absolute;left:5px;top:-13px;width:14px;height:14px;border:3px solid #6b748f;border-bottom:0;border-radius:10px 10px 0 0;transition:all .35s ease}
+    .mini-lock.unlocked{border-color:var(--green);box-shadow:0 0 16px rgba(97,240,166,.22)}
+    .mini-lock.unlocked::before{border-color:var(--green);transform:rotate(-26deg);transform-origin:left bottom}
+    .q-eq{font-size:1.13rem;min-width:0}
+    .q-percent{font-size:1.35rem;font-weight:950;text-align:right;font-variant-numeric:tabular-nums}
+    .q-submitted{text-align:right;font-size:.84rem;color:var(--muted)}
+
+    .score-side{display:grid;gap:16px}
+    .crack-meter{position:relative;padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(20,24,43,.9),rgba(12,15,27,.95));border:1px solid rgba(255,255,255,.09);overflow:hidden}
+    .crack-meter::before{content:"";position:absolute;inset:0;background-image:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.3)),var(--combo);background-size:cover;background-position:center;opacity:.22;filter:grayscale(.2) contrast(1.1)}
+    .meter{position:relative;width:210px;height:210px;margin:8px auto 16px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold) 0deg,#2f354a 0deg)}
+    .meter::before{content:"";position:absolute;inset:12px;border-radius:50%;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.06),rgba(8,10,18,.98));border:1px solid rgba(255,255,255,.08)}
+    .meter::after{content:"";position:absolute;inset:32px;border-radius:50%;border:1px dashed rgba(255,255,255,.08)}
+    .meter-inner{position:relative;z-index:2;text-align:center}
+    .meter-num{font-size:2.6rem;font-weight:950;font-variant-numeric:tabular-nums;line-height:1}
+    .meter-label{font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.13em;font-weight:800}
+    .target{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
+    .target strong{color:var(--gold2)}
+
+    .vault-crack-status{position:relative;z-index:1;margin-top:10px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(9,12,23,.68)}
+    .vault-crack-status h3{margin:0 0 6px;font-size:1rem}
+    .progress-track{height:12px;border-radius:999px;background:#262d42;overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-top:10px}
+    .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--gold),var(--green));box-shadow:0 0 18px rgba(255,229,143,.28);transition:width .35s ease}
+    .join-box{padding:16px;border-radius:22px;background:linear-gradient(180deg,rgba(22,26,46,.95),rgba(13,15,28,.95));border:1px solid rgba(255,255,255,.09);text-align:center}
+    #qrcode{display:inline-block;background:#fff;padding:10px;border-radius:12px;min-width:150px;min-height:150px;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+    .session-code{font-size:1.7rem;font-weight:950;letter-spacing:.22em;color:var(--gold2);margin-top:12px}
+    .small{font-size:.82rem;color:var(--muted);line-height:1.5}
+    .join-link{display:block;word-break:break-all;font-size:.72rem;color:#d7def5;margin-top:8px;user-select:all}
+
+    .result{position:relative;margin-top:18px;padding:34px;border-radius:28px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
+    .result::before{content:"";position:absolute;inset:0;background-image:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.35)),var(--vault);background-size:cover;background-position:center;opacity:.28}
+    .result>*{position:relative;z-index:1}
+    .result.success{background:linear-gradient(180deg,rgba(16,34,28,.84),rgba(8,14,12,.94));border:1px solid rgba(97,240,166,.26)}
+    .result.failure{background:linear-gradient(180deg,rgba(44,18,25,.84),rgba(16,8,11,.95));border:1px solid rgba(255,111,127,.28)}
+    .result h2{margin:.5rem 0;font-size:clamp(2rem,5vw,3.4rem)}
+    .chapter-reveal,.redacted{display:inline-block;margin-top:18px;padding:16px 24px;border-radius:18px;font-weight:950;letter-spacing:.05em;font-size:1.3rem}
+    .chapter-reveal{color:#cbffe6;background:rgba(17,50,35,.72);border:1px solid rgba(97,240,166,.34);box-shadow:0 0 26px rgba(97,240,166,.14)}
+    .redacted{color:#f0c3c9;background:rgba(50,20,24,.7);border:1px solid rgba(255,111,127,.28);letter-spacing:.18em}
+
+    .student-wrap{max-width:980px;margin:0 auto}
+    .student-intro{position:relative;padding:24px;border-radius:24px;background:linear-gradient(180deg,rgba(18,21,38,.94),rgba(11,13,23,.95));border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);overflow:hidden}
+    .student-intro::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 22%)}
+    .student-intro h1{margin:.25rem 0 .6rem;font-size:clamp(2rem,4vw,3rem)}
+    .student-intro p{margin:0;color:var(--muted);line-height:1.6}
+    .student-progress{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted)}
+    .student-progress strong{color:var(--gold2)}
+    .answer-grid{display:grid;gap:14px;margin-top:16px}
+    .answer-card{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr) minmax(210px,260px) 120px;align-items:center;gap:14px;padding:18px 18px 18px 22px;border-radius:20px;background:linear-gradient(180deg,rgba(20,24,43,.94),rgba(13,16,29,.96));border:1px solid rgba(255,255,255,.09);box-shadow:var(--shadow);overflow:hidden}
+    .answer-card::before{content:"";position:absolute;inset:0 auto 0 0;width:8px;background:linear-gradient(180deg,var(--blue),var(--pink));opacity:.85}
+    .answer-card.correct{background:linear-gradient(180deg,rgba(16,44,33,.95),rgba(10,23,18,.96));border-color:rgba(97,240,166,.28)}
+    .answer-card.wrong{background:linear-gradient(180deg,rgba(51,18,27,.95),rgba(24,10,14,.96));border-color:rgba(255,111,127,.28)}
+    .qnum{font-size:1.4rem;font-weight:950;color:var(--gold2);text-shadow:0 0 10px rgba(255,229,143,.18)}
+    .solution-input{display:flex;align-items:center;gap:6px;justify-content:flex-end;white-space:nowrap;font-family:Georgia,"Times New Roman",serif;font-size:1.15rem}
+    .solution-input input{width:100px;color:var(--ink);background:rgba(7,9,18,.92);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:10px;text-align:center;outline:none;transition:border-color .15s ease, box-shadow .15s ease}
+    .solution-input input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(246,205,84,.12)}
+    .answer-card.correct input{border-color:var(--green);color:#c5ffe2}
+    .answer-card.wrong input{border-color:var(--red);color:#ffd1d6}
+    .feedback-symbol{font-weight:950;font-size:1.2rem;min-width:16px}
+    .answer-card.correct .feedback-symbol{color:var(--green)}
+    .answer-card.wrong .feedback-symbol{color:var(--red)}
+
+    .student-bottom{position:sticky;bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;padding:14px 16px;border-radius:18px;background:rgba(8,10,18,.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.11);box-shadow:var(--shadow)}
+    .notice{padding:13px 15px;border-radius:16px;background:linear-gradient(180deg,rgba(41,20,23,.92),rgba(28,11,14,.95));border:1px solid rgba(255,111,127,.28);color:#ffd4d8;margin-top:14px}
+
+    .setup{margin-top:16px;padding:18px;border-radius:20px;background:linear-gradient(180deg,rgba(19,23,41,.95),rgba(11,13,24,.96));border:1px solid rgba(255,255,255,.11)}
+    .setup textarea{width:100%;min-height:150px;margin-top:10px;border-radius:14px;padding:12px;background:#090b14;color:#eff2ff;border:1px solid rgba(255,255,255,.15);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem}
+    .setup code{color:var(--gold2)}
+
+    dialog{border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(20,24,43,.98),rgba(12,14,24,.98));color:var(--ink);border-radius:24px;width:min(440px,calc(100% - 24px));box-shadow:var(--shadow);padding:24px}
+    dialog::backdrop{background:rgba(0,0,0,.75)}
+    dialog h3{margin-top:0}
+    dialog input{width:100%;border-radius:12px;padding:12px;background:#090b14;color:var(--ink);border:1px solid rgba(255,255,255,.15);margin:8px 0 14px}
+
+    @media (max-width:1020px){
+      .hero-stage,.dashboard{grid-template-columns:1fr}
+      .rule-grid{grid-template-columns:1fr}
+      .vault-display{min-height:280px}
+    }
+    @media (max-width:760px){
+      .q-card{grid-template-columns:42px minmax(0,1fr) 96px;}
+      .q-submitted{grid-column:2/4;text-align:left}
+      .answer-card{grid-template-columns:40px minmax(0,1fr)}
+      .solution-input{justify-content:flex-start}
+      .answer-card .btn{grid-column:2}
+    }
+    @media (max-width:560px){
+      .page{width:min(100% - 14px,1280px);padding-top:12px}
+      .bulb-row{grid-template-columns:repeat(14,1fr)}
+      .marquee{padding:16px}
+      .overview-head{flex-direction:column;align-items:flex-start}
+      .timer{font-size:1.9rem}
+      .answer-card{grid-template-columns:1fr}
+      .qnum{display:none}
+      .answer-card .btn{grid-column:auto}
+      .student-bottom{align-items:stretch;flex-direction:column}
+      .solution-input{justify-content:flex-start}
+    }
+  </style>
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'], ['$', '$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="lights" aria-hidden="true">
+    <div class="light left"></div>
+    <div class="light mid"></div>
+    <div class="light right"></div>
+  </div>
+
+  <main id="teacherPage" class="page hidden">
+    <div class="topbar">
+      <div class="brand"><span class="brand-badge">🔐</span> Chapter Access System</div>
+      <div class="top-actions">
+        <button id="clearDataBtn" class="btn-clear" type="button">🗑 EFFACER LES DONNÉES</button>
+        <div id="teacherConnection" class="status-pill">● Connexion...</div>
+      </div>
+    </div>
+
+    <div id="firebaseDiagnostic" class="notice hidden" style="margin-bottom:14px"></div>
+
+    <section id="teacherIntro" class="marquee">
+      <div class="bulb-row" aria-hidden="true">
+        <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      </div>
+
+      <div class="hero-stage">
+        <div class="hero-copy">
+          <div class="eyebrow">Game show d'ouverture de chapitre</div>
+          <h1>Déverrouillez<br>le chapitre 1.</h1>
+          <p>
+            Pour accéder au premier chapitre, la classe doit prouver que les prérequis sont maîtrisés.
+            Chaque élève résout les six équations <strong>individuellement</strong>, puis soumet ses réponses.
+            À mesure que les bonnes réponses arrivent, le coffre commence à céder.
+          </p>
+
+          <div class="rule-grid">
+            <div class="rule-card"><strong>Règle 01</strong><p>Travail individuel. Une réponse soumise est définitive : elle ne peut plus être modifiée.</p></div>
+            <div class="rule-card"><strong>Règle 02</strong><p>La classe dispose de <strong>15 minutes</strong> pour ouvrir les 6 verrous.</p></div>
+            <div class="rule-card"><strong>Règle 03</strong><p>Il faut atteindre au moins <strong>85&nbsp;% de réussite globale</strong> pour révéler le chapitre.</p></div>
+          </div>
+
+          <div class="action-row">
+            <button id="startBtn" class="btn btn-primary" type="button">COMMENCER LE JEU</button>
+          </div>
+        </div>
+
+        <div class="vault-display">
+          <div class="crack-lines" id="introCracks">
+            <span class="crack-line"></span><span class="crack-line"></span><span class="crack-line"></span><span class="crack-line"></span>
+          </div>
+          <div class="vault-overlay">
+            <span class="vault-tag">Vault access denied</span>
+            <div class="vault-caption">Le coffre du chapitre résiste encore.</div>
+            <div class="vault-small">Atteignez 85&nbsp;% de réussite pour faire sauter le verrou.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="teacherLive" class="hidden">
+      <div class="overview-head">
+        <div>
+          <div class="eyebrow">Direct du plateau</div>
+          <h2>Crack the Vault</h2>
+        </div>
+        <div class="timer-wrap">
+          <div>
+            <div class="tiny">Temps restant</div>
+            <div id="timer" class="timer">15:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <section class="panel panel-pad">
+          <div class="stage-strip" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="question-list" id="teacherQuestionList">
+            <div class="q-card" data-q="q1"><div class="mini-lock"></div><div class="q-eq">\(x+3=7\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+            <div class="q-card" data-q="q2"><div class="mini-lock"></div><div class="q-eq">\(2x=10\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+            <div class="q-card" data-q="q3"><div class="mini-lock"></div><div class="q-eq">\(13-7x=2x+58\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+            <div class="q-card" data-q="q4"><div class="mini-lock"></div><div class="q-eq">\(1-3(8-5y)=75-4(3y+11)\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+            <div class="q-card" data-q="q5"><div class="mini-lock"></div><div class="q-eq">\(\dfrac{11-3x}{4}=\dfrac{17-5x}{6}\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+            <div class="q-card" data-q="q6"><div class="mini-lock"></div><div class="q-eq">\((2-3x)(4x+3)=(6x+7)(3-2x)\)</div><div class="q-percent">0.0%</div><div class="q-submitted">0 / 0 réponses</div></div>
+          </div>
+        </section>
+
+        <aside class="score-side">
+          <div class="crack-meter">
+            <div class="eyebrow" style="position:relative;z-index:1;text-align:center">Progression du piratage</div>
+            <div id="overallMeter" class="meter">
+              <div class="meter-inner">
+                <div id="overallPercent" class="meter-num">0.0%</div>
+                <div class="meter-label">Réussite globale</div>
+              </div>
+            </div>
+            <div class="target"><span>Seuil d'ouverture</span><strong>85%</strong></div>
+            <div class="target"><span>Élèves attendus</span><strong id="expectedStudents">—</strong></div>
+            <div class="target"><span>État</span><strong id="vaultStateLabel">Coffre verrouillé</strong></div>
+            <div class="vault-crack-status">
+              <h3 id="vaultCrackTitle">Tentative de perçage...</h3>
+              <div class="small">Plus les bonnes réponses s'accumulent, plus le coffre se fissure.</div>
+              <div class="progress-track"><div id="crackProgressBar" class="progress-bar"></div></div>
+            </div>
+          </div>
+
+          <div class="join-box">
+            <div class="eyebrow">Accès élèves</div>
+            <div id="qrcode"></div>
+            <div id="sessionCode" class="session-code">------</div>
+            <div class="small">Scannez le QR code pour rejoindre la partie.</div>
+            <span id="studentLink" class="join-link"></span>
+            <div class="action-row" style="justify-content:center;margin-top:14px">
+              <button id="terminateBtn" class="btn btn-danger" type="button">TERMINER L'ACTIVITÉ</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="teacherResult" class="hidden"></section>
+  </main>
+
+  <main id="studentPage" class="page hidden">
+    <div class="student-wrap">
+      <div class="topbar">
+        <div class="brand"><span class="brand-badge">🎮</span> Chapter Access System</div>
+        <div id="studentConnection" class="status-pill">● Connexion...</div>
+      </div>
+
+      <section class="student-intro">
+        <div class="eyebrow">Mission individuelle</div>
+        <h1>🔓 Crack the Vault</h1>
+        <p>
+          Résous chaque équation sur ta feuille, puis encode uniquement la solution.
+          Une réponse soumise est <strong>définitive</strong>. Le résultat s'affiche immédiatement par couleur,
+          mais la bonne réponse n'est jamais révélée.
+        </p>
+        <div class="student-progress">
+          <span>Session <strong id="studentSessionCode">------</strong></span>
+          <span><strong id="submittedCount">0</strong> / 6 réponses soumises</span>
+        </div>
+      </section>
+
+      <div id="studentClosedNotice" class="notice hidden">Cette session est terminée. Les nouvelles réponses ne sont plus acceptées.</div>
+
+      <section class="answer-grid" id="answerGrid">
+        <article class="answer-card" data-q="q1"><div class="qnum">01</div><div class="q-eq">\(x+3=7\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 1"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+        <article class="answer-card" data-q="q2"><div class="qnum">02</div><div class="q-eq">\(2x=10\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 2"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+        <article class="answer-card" data-q="q3"><div class="qnum">03</div><div class="q-eq">\(13-7x=2x+58\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 3"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+        <article class="answer-card" data-q="q4"><div class="qnum">04</div><div class="q-eq">\(1-3(8-5y)=75-4(3y+11)\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 4"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+        <article class="answer-card" data-q="q5"><div class="qnum">05</div><div class="q-eq">\(\dfrac{11-3x}{4}=\dfrac{17-5x}{6}\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 5"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+        <article class="answer-card" data-q="q6"><div class="qnum">06</div><div class="q-eq">\((2-3x)(4x+3)=(6x+7)(3-2x)\)</div><div class="solution-input">\(S=\{\) <input inputmode="decimal" autocomplete="off" aria-label="Solution question 6"> \(\}\)<span class="feedback-symbol"></span></div><button class="btn btn-secondary submit-one" type="button">Soumettre</button></article>
+      </section>
+
+      <div class="student-bottom">
+        <span class="small">Tu peux soumettre les réponses une par une ou toutes les réponses déjà remplies.</span>
+        <button id="submitAllBtn" class="btn btn-primary" type="button">SOUMETTRE TOUT</button>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="studentCountDialog">
+    <h3>Combien d'élèves participent ?</h3>
+    <p class="small">Ce nombre sert de dénominateur pour calculer les pourcentages de réussite en direct.</p>
+    <input id="studentCountInput" type="number" min="1" max="80" step="1" value="20" />
+    <div class="action-row">
+      <button id="cancelStartBtn" class="btn btn-secondary" type="button">Annuler</button>
+      <button id="confirmStartBtn" class="btn btn-primary" type="button">Lancer les 15 minutes</button>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getDatabase, ref, set, get, update, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+    const THRESHOLD = 85;
+    const DURATION_SECONDS = 15 * 60;
+    const QUESTIONS = ["q1","q2","q3","q4","q5","q6"];
+
+    // Firebase is preconfigured for this classroom game.
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAueBbZIT_55yFaFptS2yzYGDnGuHXXqaY",
+      authDomain: "c---inequations-locker.firebaseapp.com",
+      databaseURL: "https://c---inequations-locker-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "c---inequations-locker",
+      storageBucket: "c---inequations-locker.firebasestorage.app",
+      messagingSenderId: "472803081756",
+      appId: "1:472803081756:web:d0f8c4cf196729f1fae9d9",
+      measurementId: "G-EMXETFVJJ7"
+    };
+    const ANSWER_CHECKS = {
+      q1: { salt:"vault-q1-9f2", hash:"2a53f5ef3f62d4ba2acc404fed0cf7ddd4a35cded4924b2f9ca7d1096c30ac3e" },
+      q2: { salt:"vault-q2-31a", hash:"37f39bd16f0b6261d55df61cc9e58b9570ad7c328efbf0e1abf041fe2a12dc3e" },
+      q3: { salt:"vault-q3-a72", hash:"ecdf545098f59531b6b085da50172c3687739ef943724955183b7307ddfe2386" },
+      q4: { salt:"vault-q4-cc8", hash:"6da52515f3af950cfa7cd758756fc0695a831805eba66cd12c69931aa84bd8de" },
+      q5: { salt:"vault-q5-4bd", hash:"89acb80c2fd739b43cb80d7743e9ae0c5c0076c5c06cfcd2f49c8dddd2a288b4" },
+      q6: { salt:"vault-q6-e15", hash:"e71165cf2612b160e1e6825019f21a63eb9b85a6efc2a18f12d098fad1b8a754" }
+    };
+
+    let firebaseApp = null, auth = null, db = null, currentConfig = null;
+    let currentSession = null, liveSessionData = null, timerInterval = null, autoTerminationTriggered = false;
+    let firebaseReady = false;
+    let firebaseInitPromise = null;
+    let firebaseInitError = null;
+
+    const $ = (s,r=document)=>r.querySelector(s);
+    const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+
+    function base64UrlEncode(str){ const bytes=new TextEncoder().encode(str); let bin=""; bytes.forEach(b=>bin+=String.fromCharCode(b)); return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"") }
+    function base64UrlDecode(str){ let s=str.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; const bin=atob(s); const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0)); return new TextDecoder().decode(bytes) }
+    function getStoredConfig(){ try{const raw=localStorage.getItem("chapterUnlockFirebaseConfig"); return raw?JSON.parse(raw):null}catch{return null} }
+    function configFromUrl(){ const cfg=new URLSearchParams(location.search).get("cfg"); if(!cfg) return null; try{return JSON.parse(base64UrlDecode(cfg))}catch{return null} }
+    async function initFirebase(config){ if(!config||!config.apiKey||!config.databaseURL||!config.projectId) throw new Error("Configuration Firebase incomplète."); currentConfig=config; if(!firebaseApp){ firebaseApp=getApps().length?getApps()[0]:initializeApp(config); auth=getAuth(firebaseApp); db=getDatabase(firebaseApp) } await signInAnonymously(auth); return true }
+    function setConnection(el,ok,text){ el.textContent="● "+text; el.style.color=ok?"var(--green)":"var(--red)" }
+    function randomCode(){ const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let out=""; crypto.getRandomValues(new Uint32Array(6)).forEach(n=>out+=chars[n%chars.length]); return out }
+    function normalizeAnswer(raw){ let s=String(raw??"").trim().toLowerCase().replace(/[−–—]/g,"-").replace(/,/g,".").replace(/\s+/g,""); s=s.replace(/^s=/,"").replace(/^x=/,"").replace(/^y=/,""); if(s.startsWith("{")&&s.endsWith("}")) s=s.slice(1,-1); if(/^[-+]?\d+(?:\.\d+)?$/.test(s)){ const n=Number(s); if(Number.isFinite(n)) return String(n) } if(/^[-+]?\d+\/[-+]?\d+$/.test(s)){ const [a,b]=s.split("/").map(Number); if(Number.isFinite(a)&&Number.isFinite(b)&&b!==0) return String(a/b) } return s }
+    async function sha256(str){ const data=new TextEncoder().encode(str); const digest=await crypto.subtle.digest("SHA-256",data); return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("") }
+    async function isCorrect(q,raw){ const normalized=normalizeAnswer(raw); if(!normalized) return false; const check=ANSWER_CHECKS[q]; return (await sha256(check.salt+normalized))===check.hash }
+    function participantIdFor(session){ const key="chapterUnlockParticipant:"+session; let id=localStorage.getItem(key); if(!id){ id=crypto.randomUUID?crypto.randomUUID():"p-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2); localStorage.setItem(key,id) } return id }
+    function makeStudentUrl(session){ const url=new URL(location.href); url.search=""; url.hash=""; url.searchParams.set("view","submit"); url.searchParams.set("session",session); return url.toString() }
+    function renderQr(text){ const qr=$("#qrcode"); qr.innerHTML=""; if(window.QRCode){ new QRCode(qr,{text,width:148,height:148,correctLevel:QRCode.CorrectLevel.M}) } else { qr.innerHTML='<span style="color:#111;font-size:12px">QR indisponible.<br>Utilisez le lien.</span>' } }
+
+    function computeStats(data){
+      const expected=Math.max(1,Number(data?.studentCount||1));
+      const participants=data?.participants||{};
+      const stats={}; let totalCorrect=0;
+      for(const q of QUESTIONS){
+        let correct=0, submitted=0;
+        for(const p of Object.values(participants)){ const a=p?.answers?.[q]; if(a){ submitted++; if(a.correct===true) correct++; } }
+        stats[q]={correct,submitted,percent:(correct/expected)*100}; totalCorrect+=correct;
+      }
+      return {expected,stats,overall:(totalCorrect/(expected*QUESTIONS.length))*100};
+    }
+
+    function setCrackVisual(percent){
+      const lines=$$("#introCracks .crack-line");
+      const n = percent >= 85 ? 4 : percent >= 60 ? 3 : percent >= 35 ? 2 : percent >= 15 ? 1 : 0;
+      lines.forEach((line,i)=>line.classList.toggle("active", i < n));
+    }
+
+    function updateTeacherDashboard(data){
+      liveSessionData=data; if(!data) return;
+      const result=computeStats(data);
+      $("#expectedStudents").textContent=result.expected;
+
+      for(const q of QUESTIONS){
+        const row=document.querySelector(`.q-card[data-q="${q}"]`);
+        const s=result.stats[q];
+        $(".q-percent",row).textContent=s.percent.toFixed(1)+"%";
+        $(".q-submitted",row).textContent=`${s.submitted} / ${result.expected} réponses`;
+        $(".mini-lock",row).classList.toggle("unlocked", s.percent >= THRESHOLD);
+      }
+
+      $("#overallPercent").textContent=result.overall.toFixed(1)+"%";
+      const deg=Math.max(0,Math.min(360,result.overall*3.6));
+      $("#overallMeter").style.background=`conic-gradient(${result.overall >= THRESHOLD ? "var(--green)" : "var(--gold)"} ${deg}deg,#2f354a ${deg}deg)`;
+      $("#crackProgressBar").style.width=Math.max(0,Math.min(100,result.overall))+"%";
+      $("#vaultStateLabel").textContent = result.overall >= THRESHOLD ? "Coffre forcé" : (result.overall >= 50 ? "Verrou fragilisé" : "Coffre verrouillé");
+      $("#vaultCrackTitle").textContent = result.overall >= THRESHOLD ? "Le verrou cède !" : (result.overall >= 50 ? "La porte se fissure..." : "Tentative de perçage...");
+      setCrackVisual(result.overall);
+
+      if(data.status === "closed") showTeacherResult(data);
+    }
+
+    function startTimer(data){
+      clearInterval(timerInterval); autoTerminationTriggered=false;
+      const tick = async ()=>{
+        if(!data || data.status !== "running") return;
+        const end=Number(data.startedAt)+Number(data.durationSeconds||DURATION_SECONDS)*1000;
+        const left=Math.max(0,Math.ceil((end-Date.now())/1000));
+        const mm=String(Math.floor(left/60)).padStart(2,"0");
+        const ss=String(left%60).padStart(2,"0");
+        $("#timer").textContent=`${mm}:${ss}`;
+        $("#timer").classList.toggle("warn", left <= 120);
+        if(left<=0 && !autoTerminationTriggered){ autoTerminationTriggered=true; await terminateSession(true) }
+      };
+      tick(); timerInterval=setInterval(tick,500);
+    }
+
+    async function createSession(studentCount){
+      currentSession=randomCode();
+      localStorage.setItem("chapterUnlockLastSession",currentSession);
+      const data={ status:"running", studentCount, threshold:THRESHOLD, startedAt:Date.now(), durationSeconds:DURATION_SECONDS, createdAt:Date.now() };
+      await set(ref(db,`sessions/${currentSession}`),data);
+      bindTeacherSession(currentSession);
+      const studentUrl=makeStudentUrl(currentSession);
+      $("#sessionCode").textContent=currentSession;
+      $("#studentLink").textContent=studentUrl;
+      renderQr(studentUrl);
+      $("#teacherIntro").classList.add("hidden");
+      $("#teacherLive").classList.remove("hidden");
+      startTimer(data);
+    }
+
+    function bindTeacherSession(session){ onValue(ref(db,`sessions/${session}`),(snap)=>{ const data=snap.val(); if(!data) return; updateTeacherDashboard(data); if(data.status === "running") startTimer(data) }) }
+    async function terminateSession(auto=false){ if(!currentSession || !liveSessionData || liveSessionData.status !== "running") return; if(!auto){ const ok=confirm("Terminer l'activité maintenant ? Les élèves ne pourront plus soumettre de réponses."); if(!ok) return } const stats=computeStats(liveSessionData); await update(ref(db,`sessions/${currentSession}`),{ status:"closed", endedAt:Date.now(), finalOverall:stats.overall }) }
+
+    function showTeacherResult(data){
+      clearInterval(timerInterval); $("#teacherLive").classList.add("hidden");
+      const stats=computeStats(data), success=stats.overall >= THRESHOLD; const resultEl=$("#teacherResult");
+      resultEl.className="result "+(success?"success":"failure"); resultEl.classList.remove("hidden");
+      if(success){
+        resultEl.innerHTML=`<div class="eyebrow">Access granted</div><h2>CHAPITRE DÉVERROUILLÉ</h2><p class="small" style="font-size:1rem;color:#d8fbe8">Taux de réussite final : <strong style="color:var(--green)">${stats.overall.toFixed(1)}%</strong></p><div class="chapter-reveal">CHAPITRE 1 — INÉQUATIONS</div>`;
+      }else{
+        resultEl.innerHTML=`<div class="eyebrow">Access denied</div><h2>LE CHAPITRE RESTE VERROUILLÉ</h2><p class="small" style="font-size:1rem;color:#ffd6da">Taux de réussite final : <strong style="color:var(--red)">${stats.overall.toFixed(1)}%</strong>. Une courte révision est nécessaire avant une nouvelle tentative.</p><div class="redacted">CHAPITRE 1 — ██████████</div>`;
+      }
+    }
+
+    function showDiagnostic(message){
+      const box=$("#firebaseDiagnostic");
+      box.textContent=message;
+      box.classList.remove("hidden");
+    }
+
+    function hideDiagnostic(){
+      $("#firebaseDiagnostic").classList.add("hidden");
+    }
+
+    function openStudentCountDialog(){
+      const dlg=$("#studentCountDialog");
+      if(typeof dlg.showModal === "function"){
+        dlg.showModal();
+      }else{
+        dlg.setAttribute("open","");
+      }
+    }
+
+    function closeStudentCountDialog(){
+      const dlg=$("#studentCountDialog");
+      if(typeof dlg.close === "function"){
+        dlg.close();
+      }else{
+        dlg.removeAttribute("open");
+      }
+    }
+
+    async function ensureFirebaseReady(){
+      if(firebaseReady && db) return true;
+
+      if(!firebaseInitPromise){
+        firebaseInitPromise = (async()=>{
+          try{
+            await initFirebase(FIREBASE_CONFIG);
+            firebaseReady=true;
+            firebaseInitError=null;
+            setConnection($("#teacherConnection"),true,"Firebase prêt");
+            hideDiagnostic();
+            return true;
+          }catch(e){
+            firebaseReady=false;
+            firebaseInitError=e;
+            console.error("Firebase initialization failed:",e);
+            setConnection($("#teacherConnection"),false,"Firebase non connecté");
+            showDiagnostic(
+              "Firebase n'a pas pu se connecter. Vérifie que l'authentification Anonymous est activée, " +
+              "que les règles Realtime Database ont été publiées et que cette page est ouverte depuis un site HTTPS."
+            );
+            throw e;
+          }
+        })();
+      }
+
+      try{
+        return await Promise.race([
+          firebaseInitPromise,
+          new Promise((_,reject)=>setTimeout(
+            ()=>reject(new Error("Firebase connection timeout")),
+            10000
+          ))
+        ]);
+      }catch(e){
+        firebaseInitPromise=null;
+        throw e;
+      }
+    }
+
+    async function clearAllGameData(){
+      if(!db){
+        alert("Firebase n'est pas encore connecté.");
+        return;
+      }
+
+      const first = confirm(
+        "EFFACER TOUTES LES DONNÉES ?\n\n" +
+        "Cela supprimera définitivement toutes les sessions, réponses et statistiques enregistrées dans cette base pour ce jeu."
+      );
+      if(!first) return;
+
+      const typed = prompt('Pour confirmer, écris exactement : EFFACER');
+      if(typed !== "EFFACER"){
+        alert("Suppression annulée.");
+        return;
+      }
+
+      try{
+        await set(ref(db,"sessions"), null);
+        localStorage.removeItem("chapterUnlockLastSession");
+        currentSession = null;
+        liveSessionData = null;
+        clearInterval(timerInterval);
+        alert("Toutes les données du jeu ont été effacées.");
+        const clean = new URL(location.href);
+        clean.search = "";
+        clean.hash = "";
+        location.href = clean.toString();
+      }catch(e){
+        console.error(e);
+        alert("Impossible d'effacer les données. Vérifie la connexion Firebase et les règles de la base.");
+      }
+    }
+
+    async function initTeacher(){
+      $("#teacherPage").classList.remove("hidden");
+      const conn=$("#teacherConnection");
+
+      // IMPORTANT: bind controls immediately. They must work even if Firebase
+      // is slow or unavailable.
+      $("#clearDataBtn").addEventListener("click",async()=>{
+        try{
+          await ensureFirebaseReady();
+          await clearAllGameData();
+        }catch(e){
+          alert(
+            "Impossible de contacter Firebase.\n\n" +
+            "Vérifie :\n" +
+            "• Authentication → Anonymous est activé ;\n" +
+            "• les règles Realtime Database sont publiées ;\n" +
+            "• le jeu est ouvert depuis ton site HTTPS, pas directement comme fichier local."
+          );
+        }
+      });
+
+      $("#startBtn").addEventListener("click",()=>{
+        // The number-of-students prompt must ALWAYS open immediately.
+        openStudentCountDialog();
+      });
+
+      $("#cancelStartBtn").addEventListener("click",()=>closeStudentCountDialog());
+
+      $("#confirmStartBtn").addEventListener("click",async()=>{
+        const n=Math.floor(Number($("#studentCountInput").value));
+        if(!Number.isFinite(n)||n<1||n>80){
+          alert("Introduis un nombre d'élèves entre 1 et 80.");
+          return;
+        }
+
+        $("#confirmStartBtn").disabled=true;
+        $("#confirmStartBtn").textContent="Connexion...";
+
+        try{
+          await ensureFirebaseReady();
+          closeStudentCountDialog();
+          await createSession(n);
+        }catch(e){
+          console.error(e);
+          alert(
+            "La session n'a pas pu être créée.\n\n" +
+            "Si le statut en haut n'indique pas « Firebase prêt », vérifie dans Firebase :\n" +
+            "1. Authentication → Sign-in method → Anonymous = activé\n" +
+            "2. Realtime Database → Rules = publiées\n" +
+            "3. Tu utilises l'URL HTTPS de ton site (Netlify / GitHub Pages), pas file://"
+          );
+        }finally{
+          $("#confirmStartBtn").disabled=false;
+          $("#confirmStartBtn").textContent="Lancer les 15 minutes";
+        }
+      });
+
+      $("#terminateBtn").addEventListener("click",()=>terminateSession(false));
+
+      // Detect direct local-file use, which is unsuitable for the shared QR workflow.
+      if(location.protocol === "file:"){
+        setConnection(conn,false,"Hébergement requis");
+        showDiagnostic(
+          "Le jeu est ouvert comme fichier local. Pour Firebase et le QR code élève, renomme-le index.html " +
+          "et ouvre-le depuis ton hébergement HTTPS (par exemple Netlify ou GitHub Pages)."
+        );
+      }else{
+        setConnection(conn,true,"Connexion Firebase...");
+        // Start Firebase connection in the background; do not block the UI.
+        ensureFirebaseReady().catch(()=>{});
+      }
+
+      // Recover latest session only after Firebase is available.
+      try{
+        if(location.protocol !== "file:"){
+          await ensureFirebaseReady();
+          const last=localStorage.getItem("chapterUnlockLastSession");
+          if(last && db){
+            const snap=await get(ref(db,`sessions/${last}`));
+            const data=snap.val();
+
+            if(data && data.status === "running"){
+              currentSession=last;
+              const studentUrl=makeStudentUrl(last);
+              $("#sessionCode").textContent=last;
+              $("#studentLink").textContent=studentUrl;
+              renderQr(studentUrl);
+              $("#teacherIntro").classList.add("hidden");
+              $("#teacherLive").classList.remove("hidden");
+              liveSessionData=data;
+              updateTeacherDashboard(data);
+              bindTeacherSession(last);
+              startTimer(data);
+            }else if(!data){
+              localStorage.removeItem("chapterUnlockLastSession");
+            }
+          }
+        }
+      }catch(e){
+        console.warn("Session recovery skipped:",e);
+      }
+    }
+
+    function lockStudentCard(card,correct){ card.classList.remove("correct","wrong"); card.classList.add(correct?"correct":"wrong"); const input=$("input",card), btn=$(".submit-one",card), symbol=$(".feedback-symbol",card); input.disabled=true; btn.disabled=true; btn.textContent="Soumis"; symbol.textContent=correct?"✓":"×" }
+    function updateStudentProgress(){ const submitted=$$(".answer-card").filter(c=>c.classList.contains("correct")||c.classList.contains("wrong")).length; $("#submittedCount").textContent=submitted; $("#submitAllBtn").disabled=submitted >= QUESTIONS.length || liveSessionData?.status === "closed" }
+
+    async function submitStudentAnswer(session,pid,q,card){
+      if(liveSessionData?.status === "closed") return;
+      const input=$("input",card); const raw=input.value; if(!raw.trim()){ input.focus(); return }
+      const correct=await isCorrect(q,raw); const answerRef=ref(db,`sessions/${session}/participants/${pid}/answers/${q}`);
+      const result=await runTransaction(answerRef,current=>{ if(current !== null) return; return { correct, submittedAt:Date.now() } });
+      if(result.committed){ lockStudentCard(card,correct); updateStudentProgress(); } else { const existing=result.snapshot.val(); if(existing) lockStudentCard(card,existing.correct === true) }
+    }
+
+    async function initStudent(){
+      $("#studentPage").classList.remove("hidden");
+      const params=new URLSearchParams(location.search); const session=(params.get("session")||"").toUpperCase(); $("#studentSessionCode").textContent=session||"------";
+      if(!session){ setConnection($("#studentConnection"),false,"Session manquante"); $("#answerGrid").innerHTML='<div class="notice">Lien de session invalide. Scanne le QR code affiché par le professeur.</div>'; $("#submitAllBtn").disabled=true; return }
+      try{
+        await Promise.race([
+          initFirebase(FIREBASE_CONFIG),
+          new Promise((_,reject)=>setTimeout(()=>reject(new Error("Firebase connection timeout")),10000))
+        ]);
+        firebaseReady=true;
+        setConnection($("#studentConnection"),true,"Connecté");
+      }catch(e){
+        console.error(e);
+        setConnection($("#studentConnection"),false,"Connexion impossible");
+        $("#answerGrid").innerHTML='<div class="notice">Impossible de se connecter à Firebase. Demande au professeur de vérifier la session.</div>';
+        $("#submitAllBtn").disabled=true;
+        return;
+      }
+      const sessionRef=ref(db,`sessions/${session}`); const initial=await get(sessionRef);
+      if(!initial.exists()){ setConnection($("#studentConnection"),false,"Session introuvable"); $("#answerGrid").innerHTML='<div class="notice">Cette session n’existe pas.</div>'; $("#submitAllBtn").disabled=true; return }
+      const pid=participantIdFor(session);
+      onValue(sessionRef,snap=>{
+        liveSessionData=snap.val();
+
+        if(!liveSessionData){
+          $("#studentClosedNotice").classList.remove("hidden");
+          $("#studentClosedNotice").textContent="Cette session a été supprimée par le professeur.";
+          $$(".answer-card input").forEach(i=>i.disabled=true);
+          $$(".submit-one").forEach(b=>b.disabled=true);
+          $("#submitAllBtn").disabled=true;
+          return;
+        }
+
+        const closed=liveSessionData.status === "closed";
+        $("#studentClosedNotice").classList.toggle("hidden",!closed);
+        if(closed){
+          $$(".answer-card input").forEach(i=>i.disabled=true);
+          $$(".submit-one").forEach(b=>b.disabled=true);
+          $("#submitAllBtn").disabled=true;
+        }
+      });
+      onValue(ref(db,`sessions/${session}/participants/${pid}/answers`),snap=>{ const answers=snap.val()||{}; for(const [q,a] of Object.entries(answers)){ const card=document.querySelector(`.answer-card[data-q="${q}"]`); if(card) lockStudentCard(card,a.correct===true) } updateStudentProgress() });
+      $$(".submit-one").forEach(btn=>btn.addEventListener("click",async()=>{ const card=btn.closest(".answer-card"); btn.disabled=true; try{ await submitStudentAnswer(session,pid,card.dataset.q,card) }catch(e){ console.error(e); alert("La réponse n'a pas pu être envoyée. Vérifie ta connexion.") } finally { if(!card.classList.contains("correct") && !card.classList.contains("wrong") && liveSessionData?.status !== "closed") btn.disabled=false } }));
+      $("#submitAllBtn").addEventListener("click",async()=>{ const cards=$$(".answer-card").filter(card=>!(card.classList.contains("correct")||card.classList.contains("wrong")) && $("input",card).value.trim()); if(cards.length===0){ alert("Aucune nouvelle réponse remplie à soumettre."); return } $("#submitAllBtn").disabled=true; for(const card of cards){ try{ await submitStudentAnswer(session,pid,card.dataset.q,card) }catch(e){ console.error(e) } } updateStudentProgress() });
+    }
+
+    async function bootstrap(){ const params=new URLSearchParams(location.search); const view=params.get("view")||"overview"; if(view==="submit") await initStudent(); else await initTeacher() }
+    bootstrap().catch(err=>{ console.error(err); alert("Une erreur inattendue s'est produite. Ouvre la console du navigateur pour plus de détails.") });
+  </script>
+</body>
+</html>
