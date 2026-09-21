@@ -39,7 +39,7 @@ button{touch-action:manipulation}
  repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 80px)}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:4}
 .brand{display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.13em;color:var(--gold2);font-weight:950}
-.logo{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,229,154,.35);display:grid;place-items:center;background:rgba(255,229,154,.08)}
+.logo{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,229,154,.35);display:grid;place-items:center;background:rgba(255,229,154,.08);font-size:1.35rem}
 .top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .status{padding:9px 13px;border-radius:999px;background:rgba(8,10,20,.82);border:1px solid var(--line);font-size:.86rem;color:var(--muted)}
 .status.ok{color:var(--green)}
@@ -111,10 +111,10 @@ button{touch-action:manipulation}
 .questions{display:grid;gap:11px}
 .qrow{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr) 120px 132px;align-items:center;gap:12px;padding:17px 16px 17px 20px;border:1px solid rgba(255,255,255,.08);border-radius:17px;background:linear-gradient(180deg,rgba(29,35,60,.94),rgba(17,21,37,.98));overflow:hidden}
 .qrow:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--cyan),var(--pink))}
-.lock{width:29px;height:23px;border:2px solid #7a849f;border-radius:5px;position:relative;margin:auto}
-.lock:before{content:"";position:absolute;left:5px;top:-13px;width:14px;height:14px;border:3px solid #7a849f;border-bottom:0;border-radius:10px 10px 0 0;transition:.3s}
-.lock.open{border-color:var(--green);box-shadow:0 0 14px rgba(102,237,168,.2)}
-.lock.open:before{border-color:var(--green);transform:rotate(-27deg);transform-origin:left bottom}
+.lock{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;margin:auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 14px rgba(0,0,0,.35)}
+.lock:before{content:"🔒";font-size:1.45rem;line-height:1}
+.lock.open{background:rgba(102,237,168,.14);border-color:rgba(102,237,168,.35);box-shadow:0 0 16px rgba(102,237,168,.18)}
+.lock.open:before{content:"🔓"}
 .eq{font-family:Georgia,"Times New Roman",serif;font-size:1.18rem}
 .frac{display:inline-grid;grid-template-rows:auto auto;vertical-align:middle;text-align:center;line-height:1.05;margin:0 .15em}
 .frac .num{border-bottom:1.5px solid currentColor;padding:0 .18em .12em}
@@ -356,7 +356,7 @@ window.MathJax = {
     <div id="startModalStatus" class="modal-status"></div>
     <div class="modal-actions">
       <button id="cancelStartBtn" class="btn secondary" type="button">Annuler</button>
-      <button id="launchBtn" class="btn primary" type="button">LANCER LES 15 MINUTES</button>
+      <button id="launchBtn" class="btn primary" type="button">CRÉER LA SESSION</button>
     </div>
   </div>
 </div>
@@ -395,6 +395,7 @@ let db = null;
 let authReady = false;
 let firebaseError = null;
 let currentSession = null;
+let studentPromptOpened = false;
 let liveData = null;
 let timerHandle = null;
 let teacherListener = null;
@@ -770,6 +771,12 @@ window.__vaultOpenStart = function(){
   }
 };
 
+function openStudentPromptImmediately(){
+  if(studentPromptOpened || currentSession) return;
+  studentPromptOpened = true;
+  window.__vaultOpenStart();
+}
+
 async function initTeacher(){
   show($("#teacherApp"));
 
@@ -816,7 +823,7 @@ async function initTeacher(){
       modalStatus("Impossible de créer la session. Vérifie Firebase Authentication → Anonymous et les règles Realtime Database.",true);
     }finally{
       btn.disabled=false;
-      btn.textContent="LANCER LES 15 MINUTES";
+      btn.textContent="CRÉER LA SESSION";
     }
   });
 
@@ -832,6 +839,11 @@ async function initTeacher(){
   // Firebase can initialize independently; it never controls whether Start is clickable.
   if(authReady) setStatus($("#teacherStatus"),"Firebase prêt","ok");
   else setStatus($("#teacherStatus"),"Connexion Firebase...");
+
+  // Ask for the number of students immediately when there is no active session saved.
+  if(!localStorage.getItem("vaultLastSession")){
+    setTimeout(openStudentPromptImmediately, 250);
+  }
 
   try{
     await waitForFirebase(10000);
@@ -854,13 +866,17 @@ async function initTeacher(){
         renderTeacher(d);
         if(d.status==="waiting") renderWaitingState(d);
         else startTimer(d);
-      }else if(!d){
+      }else{
         localStorage.removeItem("vaultLastSession");
+        openStudentPromptImmediately();
       }
+    }else{
+      openStudentPromptImmediately();
     }
   }catch(e){
     setStatus($("#teacherStatus"),"Firebase non connecté","bad");
     teacherMessage("Le bouton COMMENCER LE JEU reste fonctionnel. Si le lancement de la session échoue, vérifie Anonymous Authentication et les règles de la Realtime Database.");
+    openStudentPromptImmediately();
   }
 }
 
